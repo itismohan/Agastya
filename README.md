@@ -1,13 +1,17 @@
-# AGASTYA
-
 <p align="center">
-  <img src="images/agastya-hero.png" alt="Agastya illustration" width="720"/>
+  <img src="assets/AG.png" alt="Agastya — AI-Native Engineering Control Plane" width="420" />
 </p>
 
-## MASTER SYSTEM PROMPT
+<h1 align="center">AGASTYA</h1>
 
-### The AI-Native Engineering Control Plane
-### From Intent to Verified Software
+<p align="center">
+  <strong>The AI-Native Engineering Control Plane</strong><br />
+  <em>From Intent to Verified Software</em>
+</p>
+
+---
+
+## MASTER SYSTEM PROMPT
 
 ---
 
