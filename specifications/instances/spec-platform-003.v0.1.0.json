@@ -1,0 +1,138 @@
+{
+  "$schema": "https://agastya.dev/schemas/canonical-specification/1.0.0/schema.json",
+  "schema_version": "1.0.0",
+  "id": "SPEC-PLATFORM-003",
+  "version": "0.1.0",
+  "status": "APPROVED",
+  "title": "Multi-Agent Orchestration Layer",
+  "summary": "Coordinate specialised AI agents through governed, provider-neutral, evidence-producing tasks with explicit policies, permissions, budgets and approval gates.",
+  "project": {
+    "id": "PRJ-AGASTYA-CORE",
+    "name": "AGASTYA Core Platform",
+    "tenant_id": "TENANT-AGASTYA",
+    "environment": "DEVELOPMENT"
+  },
+  "intent": {
+    "id": "INTENT-AGENT-001",
+    "statement": "Enable AGASTYA to coordinate narrow AI engineering agents safely while preserving specification authority, policy control, human approval and independent verification.",
+    "desired_outcomes": [
+      "Every agent action is traceable to a project, approved specification or approved analysis request, policy decision and evidence record.",
+      "No agent receives unbounded tools, secrets, production access or autonomy.",
+      "Provider and model choices can change without changing core orchestration rules."
+    ],
+    "success_measures": [
+      { "name": "Task provenance coverage", "target": "100% of dispatched tasks contain project, specification, policy and input-hash provenance", "measurement_method": "Audit task records and reject dispatch records missing mandatory provenance." },
+      { "name": "Unauthorised tool prevention", "target": "0 unbrokered or ungranted tool invocations", "measurement_method": "Security tests and audit reconciliation of agent tasks and tool invocations." }
+    ],
+    "out_of_scope": ["Level 4 autonomous operation.", "Unrestricted production deployments.", "Storage of private model reasoning."],
+    "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.9, "rationale": "Derived from AGASTYA Agent Control Plane direction." }
+  },
+  "problem": {
+    "statement": "AI engineering agents can generate useful work but become unsafe and untrustworthy when their tasks, permissions, tool actions, decisions and outputs are not governed by an approved engineering contract.",
+    "current_state": "AGASTYA has defined the specification and workspace foundations but no durable control-plane model for specialised agent registration, task execution, policy decisions or evidence.",
+    "impact": ["Unbounded automation could introduce untraceable engineering changes.", "Provider-specific logic would weaken product durability.", "Agent outputs could be mistaken for verified engineering facts."],
+    "evidence": [{ "id": "DOC-AGASTYA-README", "kind": "DOCUMENT", "uri": "file:///Users/mohankrishnagundala/Documents/Agastya/README.md", "label": "AGASTYA master product specification" }]
+  },
+  "business_context": {
+    "domain": "AI-native engineering governance",
+    "business_value": "A governed Agent Control Plane enables controlled AI throughput while protecting intent fidelity, security and enterprise trust.",
+    "priority": "HIGH",
+    "target_users": ["Engineering leaders", "Platform engineers", "Developers", "Security reviewers"]
+  },
+  "stakeholders": [
+    { "id": "STAKEHOLDER-AGENT-PLATFORM", "name": "Platform Engineering", "role": "Owns orchestration runtime and provider integration", "interests": ["Resilience", "Provider neutrality", "Operational observability"], "influence": "HIGH" },
+    { "id": "STAKEHOLDER-AGENT-GOVERNANCE", "name": "Engineering Governance", "role": "Owns approval, policy and audit posture", "interests": ["Controlled autonomy", "Evidence", "Least privilege"], "influence": "HIGH" }
+  ],
+  "actors": [
+    { "id": "ACTOR-AGENT-OWNER", "name": "Project Owner", "type": "HUMAN", "goals": ["Approve high-risk agent actions and inspect evidence."], "permissions": ["agent:approve", "agent:read"] },
+    { "id": "ACTOR-AGENT-ORCHESTRATOR", "name": "Orchestration Service", "type": "SYSTEM", "goals": ["Validate, dispatch and track governed agent tasks."], "permissions": ["agent:dispatch", "policy:evaluate"] },
+    { "id": "ACTOR-AGENT-WORKER", "name": "Scoped Agent Worker", "type": "SYSTEM", "goals": ["Execute leased task attempts with effective grants."], "permissions": ["agent:execute", "tool:broker_request"] },
+    { "id": "ACTOR-AGENT-DEVELOPMENT", "name": "Development Agent", "type": "AGENT", "goals": ["Produce a bounded implementation proposal."], "permissions": ["tool:repository_read", "tool:repository_write_proposal"] }
+  ],
+  "functional_requirements": [
+    { "id": "FREQ-AGENT-001", "title": "Register versioned specialised agents", "statement": "The system shall register versioned AgentDefinitions with capabilities, task contracts, permitted tools, risk, timeout, retry, budget and approval policy.", "priority": "MUST", "status": "PROPOSED", "acceptance_criteria_refs": ["AC-AGENT-001"], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.95, "rationale": "Agent Registry foundation." } },
+    { "id": "FREQ-AGENT-002", "title": "Create governed orchestration plans", "statement": "The system shall create a versioned orchestration plan only from an approved specification revision or an approved analysis request and shall snapshot policy and input versions.", "priority": "MUST", "status": "PROPOSED", "acceptance_criteria_refs": ["AC-AGENT-001"], "business_rule_refs": ["RULE-AGENT-001"], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.95, "rationale": "Specification-first orchestration." } },
+    { "id": "FREQ-AGENT-003", "title": "Evaluate task policy before dispatch", "statement": "The system shall validate task input, agent eligibility, policy, budget, autonomy, tool permissions and approval requirements before dispatching a task.", "priority": "MUST", "status": "PROPOSED", "acceptance_criteria_refs": ["AC-AGENT-002", "AC-AGENT-003"], "business_rule_refs": ["RULE-AGENT-002", "RULE-AGENT-003"], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Controlled autonomy requirement." } },
+    { "id": "FREQ-AGENT-004", "title": "Execute durable asynchronous tasks", "statement": "The system shall execute tasks through durable queue and worker mechanics with idempotency, lease recovery, timeout, retry, cancellation and visible state transitions.", "priority": "MUST", "status": "PROPOSED", "acceptance_criteria_refs": ["AC-AGENT-004"], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.9, "rationale": "Long-running work cannot block the main UI." } },
+    { "id": "FREQ-AGENT-005", "title": "Broker all agent tool invocations", "statement": "The system shall execute every agent tool call through a registered Tool Broker that validates effective permission, schema, risk and approval requirements.", "priority": "MUST", "status": "PROPOSED", "acceptance_criteria_refs": ["AC-AGENT-002"], "business_rule_refs": ["RULE-AGENT-002"], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Tool governance requirement." } },
+    { "id": "FREQ-AGENT-006", "title": "Preserve agent evidence and truth state", "statement": "The system shall persist task output, model/provider metadata, concise rationale, tool result references, cost, latency and verification truth state for each attempt.", "priority": "MUST", "status": "PROPOSED", "acceptance_criteria_refs": ["AC-AGENT-005"], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.95, "rationale": "Evidence and explainability requirement." } }
+  ],
+  "non_functional_requirements": [
+    { "id": "NFR-AGENT-001", "category": "RELIABILITY", "statement": "The orchestration runtime shall persist task state before dispatch and recover leased work without losing evidence or duplicating non-idempotent actions.", "priority": "MUST", "verification_method": "Failure-injection tests terminate workers during task and tool execution, then assert recovery and idempotency outcomes.", "target": "No lost durable task state or duplicate committed sensitive action in the resilience suite.", "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.9, "rationale": "Asynchronous execution reliability." } },
+    { "id": "NFR-AGENT-002", "category": "SECURITY", "statement": "Agents shall never receive raw long-lived secrets or unscoped production permissions; tools shall receive only short-lived effective grants at execution boundaries.", "priority": "MUST", "verification_method": "Security tests inspect task context, broker calls and logs for secret absence and permission denial.", "target": "Zero raw credential exposures in agent input, output, events or logs.", "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Least-privilege control plane." } }
+  ],
+  "business_rules": [
+    { "id": "RULE-AGENT-001", "statement": "A task must reference an approved specification revision unless its task type is explicitly authorised as a pre-specification analysis request.", "enforcement": "POLICY", "exceptions": ["Read-only Analyse tasks may begin from an approved analysis request with project and risk context."], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.95, "rationale": "Specification-first operating model." } },
+    { "id": "RULE-AGENT-002", "statement": "An agent may invoke only registered tools granted by the effective task permission profile; unregistered or ungranted invocations are denied before execution.", "enforcement": "SYSTEM", "exceptions": [], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Tool governance and least privilege." } },
+    { "id": "RULE-AGENT-003", "statement": "A high-risk, irreversible, production, security-policy, database-migration or protected-branch task must wait for an explicit approval gate before sensitive execution.", "enforcement": "HUMAN_APPROVAL", "exceptions": [], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Human-in-the-loop control." } }
+  ],
+  "constraints": [
+    { "id": "CONSTRAINT-AGENT-001", "type": "SECURITY", "statement": "The first implementation cohort is restricted to read-only Analyse and Validation agents at Autonomy Level 0 or 1.", "rationale": "Write, deployment and production capabilities require completed graph, verification, policy and tool-broker controls.", "enforced_by": ["FREQ-AGENT-003", "FREQ-AGENT-005"] },
+    { "id": "CONSTRAINT-AGENT-002", "type": "TECHNICAL", "statement": "Agent orchestration business logic must remain provider-neutral and execute external model/provider calls through registered adapters.", "rationale": "AGASTYA must retain product value independent of the dominant model provider.", "enforced_by": ["FREQ-AGENT-001"] }
+  ],
+  "assumptions": [],
+  "dependencies": [
+    { "id": "DEPENDENCY-AGENT-001", "name": "Durable task runtime", "type": "INFRASTRUCTURE", "status": "UNKNOWN", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "risk": "A durable queue, worker and event-stream architecture must be selected before implementation." },
+    { "id": "DEPENDENCY-AGENT-002", "name": "Approved pilot provider adapter", "type": "EXTERNAL_SERVICE", "status": "UNKNOWN", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "risk": "Provider privacy, model capability and cost policy determine pilot adapter suitability." }
+  ],
+  "domain_model": {
+    "bounded_contexts": [
+      { "id": "CONTEXT-AGENT-CONTROL", "name": "Agent Control Plane", "responsibility": "Own agent definitions, plans, tasks, policy decisions, effective grants and task evidence.", "upstream_context_refs": ["CONTEXT-SPECIFICATION", "CONTEXT-WORKSPACE"], "downstream_context_refs": ["CONTEXT-AUDIT"] }
+    ],
+    "ubiquitous_language": [
+      { "term": "AgentDefinition", "definition": "A versioned contract for one narrow agent capability and its controls." },
+      { "term": "OrchestrationPlan", "definition": "A versioned DAG of governed agent tasks derived from an approved engineering context." },
+      { "term": "Effective grant", "definition": "The least-privilege tool, data and environment permission set evaluated for one task." },
+      { "term": "Approval gate", "definition": "A policy-defined human decision required before a sensitive action may execute." }
+    ]
+  },
+  "entities": [],
+  "workflows": [
+    { "id": "WORKFLOW-AGENT-READONLY", "name": "Execute a read-only governed analysis task", "trigger": "An authorised user requests analysis against approved engineering context.", "steps": [{ "sequence": 1, "actor_ref": "ACTOR-AGENT-ORCHESTRATOR", "action": "Validates task input, agent eligibility, policy, budget and effective grant.", "result": "Task is blocked, waits for approval or is queued with a policy snapshot.", "rule_refs": ["RULE-AGENT-001", "RULE-AGENT-002"] }, { "sequence": 2, "actor_ref": "ACTOR-AGENT-WORKER", "action": "Leases and executes the task through a provider adapter using only registered read tools.", "result": "Output, tool evidence and concise rationale are persisted.", "rule_refs": ["RULE-AGENT-002"] }, { "sequence": 3, "actor_ref": "ACTOR-AGENT-ORCHESTRATOR", "action": "Records task truth state and required next verification.", "result": "Output is clearly marked proposal, partial, blocked, failed or verified according to evidence.", "rule_refs": [] }], "outcomes": ["A governed agent result is traceable to context and policy.", "No authority is claimed without verification."], "error_handling": "Provider, worker, tool and policy failures produce durable visible task states and evidence." }
+  ],
+  "state_models": [
+    { "id": "STATE-MODEL-AGENT-TASK", "name": "Agent task lifecycle", "initial_state": "QUEUED", "states": [{ "name": "QUEUED", "terminal": false, "description": "Eligible for durable dispatch." }, { "name": "WAITING_APPROVAL", "terminal": false, "description": "Sensitive action paused for human decision." }, { "name": "RUNNING", "terminal": false, "description": "Worker holds active task lease." }, { "name": "COMPLETED", "terminal": true, "description": "Output and evidence stored." }, { "name": "FAILED", "terminal": true, "description": "Terminal execution error recorded." }, { "name": "CANCELLED", "terminal": true, "description": "Authorised cancellation or rejected approval." }, { "name": "BLOCKED", "terminal": false, "description": "Policy, dependency or budget blocker." }], "transitions": [{ "from": "QUEUED", "to": "WAITING_APPROVAL", "trigger": "policy_requires_approval", "guard_rule_refs": ["RULE-AGENT-003"] }, { "from": "WAITING_APPROVAL", "to": "QUEUED", "trigger": "approval_granted", "guard_rule_refs": [] }, { "from": "QUEUED", "to": "RUNNING", "trigger": "worker_leases", "guard_rule_refs": [] }, { "from": "RUNNING", "to": "COMPLETED", "trigger": "evidence_persisted", "guard_rule_refs": [] }, { "from": "RUNNING", "to": "FAILED", "trigger": "terminal_error", "guard_rule_refs": [] }] }
+  ],
+  "api_contracts": [],
+  "event_contracts": [],
+  "data_models": [],
+  "security_requirements": [
+    { "id": "SEC-AGENT-001", "statement": "Every task and tool invocation shall be project-scoped, authorised and audited; agents shall never receive raw long-lived secrets.", "verification_method": "Security tests inspect effective grants and records for permission denial, secret redaction and cross-project isolation.", "priority": "MUST", "control_refs": ["NFR-AGENT-002"] }
+  ],
+  "compliance_requirements": [],
+  "performance_requirements": [],
+  "accessibility_requirements": [],
+  "observability_requirements": [
+    { "id": "OBS-AGENT-001", "statement": "Every task state transition, provider attempt, tool invocation, policy decision and approval gate shall emit a structured correlated event.", "verification_method": "Integration tests reconstruct a task lifecycle from durable events and audit records.", "priority": "MUST", "control_refs": [] }
+  ],
+  "acceptance_criteria": [
+    { "id": "AC-AGENT-001", "requirement_ref": "FREQ-AGENT-002", "title": "Read-only task receives governed provenance", "given": "A registered read-only agent and approved engineering context.", "when": "An authorised user submits a valid analysis task.", "then": "The task is queued with immutable input hash, specification/project provenance, policy snapshot and least-privilege grant.", "verification_type": "AUTOMATED_TEST", "test_requirement_refs": ["TEST-REQ-AGENT-001"] },
+    { "id": "AC-AGENT-002", "requirement_ref": "FREQ-AGENT-005", "title": "Unpermitted tool call is stopped by broker", "given": "A task whose effective grant excludes a requested tool.", "when": "The agent attempts the tool invocation.", "then": "The broker denies before execution and records a policy decision and audit evidence.", "verification_type": "SECURITY_TEST", "test_requirement_refs": ["TEST-REQ-AGENT-002"] },
+    { "id": "AC-AGENT-003", "requirement_ref": "FREQ-AGENT-003", "title": "Sensitive task waits for approval", "given": "A task requiring a protected write, migration, production or high-risk action.", "when": "The plan reaches the sensitive action.", "then": "Task state becomes WAITING_APPROVAL and no action executes before an authorised approval decision.", "verification_type": "AUTOMATED_TEST", "test_requirement_refs": ["TEST-REQ-AGENT-002"] },
+    { "id": "AC-AGENT-004", "requirement_ref": "FREQ-AGENT-004", "title": "Task recovers from worker failure", "given": "A leased task with idempotent tool invocation state.", "when": "The worker dies before completion and lease expires.", "then": "Recovery follows retry policy, preserves evidence and does not duplicate committed tool action.", "verification_type": "AUTOMATED_TEST", "test_requirement_refs": ["TEST-REQ-AGENT-003"] },
+    { "id": "AC-AGENT-005", "requirement_ref": "FREQ-AGENT-006", "title": "Agent output states its verification truth", "given": "An agent completes a proposal while independent verification is pending.", "when": "A user reads the task result.", "then": "Output is marked proposal or unverified rather than verified and includes required next evidence.", "verification_type": "AUTOMATED_TEST", "test_requirement_refs": ["TEST-REQ-AGENT-004"] }
+  ],
+  "test_requirements": [
+    { "id": "TEST-REQ-AGENT-001", "scope": "Registry, plan compilation and task provenance generation for read-only pilot tasks.", "level": "INTEGRATION", "expected_evidence": "Task record with valid contracts, input hash, policy snapshot and effective grant.", "requirement_refs": ["FREQ-AGENT-001", "FREQ-AGENT-002"], "acceptance_criteria_refs": ["AC-AGENT-001"] },
+    { "id": "TEST-REQ-AGENT-002", "scope": "Tool broker denial and human approval gate enforcement.", "level": "SECURITY", "expected_evidence": "No tool execution before denied/approval-required decisions; auditable policy records.", "requirement_refs": ["FREQ-AGENT-003", "FREQ-AGENT-005"], "acceptance_criteria_refs": ["AC-AGENT-002", "AC-AGENT-003"] },
+    { "id": "TEST-REQ-AGENT-003", "scope": "Worker crash, lease recovery, retry and task/tool idempotency.", "level": "INTEGRATION", "expected_evidence": "Failure-injection report with durable state and no duplicated committed action.", "requirement_refs": ["FREQ-AGENT-004"], "acceptance_criteria_refs": ["AC-AGENT-004"] },
+    { "id": "TEST-REQ-AGENT-004", "scope": "Evidence, provider/model metadata and truth-state presentation.", "level": "REGRESSION", "expected_evidence": "Completed task fixtures demonstrate proposal/unverified/verified state distinctions.", "requirement_refs": ["FREQ-AGENT-006"], "acceptance_criteria_refs": ["AC-AGENT-005"] }
+  ],
+  "deployment_requirements": [],
+  "risks": [
+    { "id": "RISK-AGENT-001", "title": "Agent autonomy exceeds verification capability", "description": "Agent actions could outrun the ability to prove conformance and safety.", "severity": "CRITICAL", "likelihood": "POSSIBLE", "mitigation": "Restrict the first cohort to Level 0/1 read-only tasks and require independent verification before verified status.", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "status": "OPEN" },
+    { "id": "RISK-AGENT-002", "title": "Provider adapter creates hidden lock-in or data leakage", "description": "A provider-specific integration may violate privacy policy or embed core workflow assumptions.", "severity": "HIGH", "likelihood": "POSSIBLE", "mitigation": "Use provider-neutral invocation contracts, adapter metadata and explicit privacy/model routing policies.", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "status": "OPEN" }
+  ],
+  "open_questions": [
+    { "id": "QUESTION-AGENT-001", "question": "Which first provider adapter and model privacy profile will be approved for the read-only pilot?", "status": "ACCEPTED_RISK", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "impact_if_unresolved": "Provider Adapter implementation and pilot data boundaries cannot be selected.", "resolution": "Accepted as a design-phase risk. Provider and privacy selection is a mandatory gate before any external model invocation.", "resolved_at": "2026-08-24T16:57:28Z" },
+    { "id": "QUESTION-AGENT-002", "question": "Which durable queue, worker and event-stream deployment architecture satisfies the required retry, security and operational SLOs?", "status": "ACCEPTED_RISK", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "impact_if_unresolved": "P2 runtime implementation cannot proceed safely.", "resolution": "Accepted as a design-phase risk. Queue, worker and event-stream architecture is a mandatory ADR gate before runtime implementation.", "resolved_at": "2026-08-24T16:57:28Z" }
+  ],
+  "architecture_decisions": [
+    { "id": "ADR-AGENT-001", "title": "Use a durable task state machine and scoped worker model", "context": "Agent calls are long-running and failure-prone; request-thread execution cannot preserve state or support secure policy gates.", "decision": "Use a durable task store, queue, lease-based workers, idempotency keys and event stream for all agent tasks.", "alternatives": [{ "name": "Synchronous API execution", "summary": "Execute provider calls on the request thread.", "rejection_reason": "Blocks UI, loses resilient state and cannot safely coordinate long-running work." }], "rationale": "Durable task execution is required for evidence, retries, approvals and observable state.", "consequences": ["A queue/worker deployment decision is required.", "Task and tool idempotency contracts are mandatory."], "status": "PROPOSED", "approver_refs": [] }
+  ],
+  "traceability": { "links": [{ "id": "LINK-AGENT-001", "source": { "id": "SPEC-PLATFORM-001", "kind": "SPECIFICATION", "version": "1.0.0" }, "target": { "id": "FREQ-AGENT-002", "kind": "REQUIREMENT" }, "relationship_type": "DERIVED_FROM", "confidence": 0.95, "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:52:46Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.95, "rationale": "Agent orchestration must execute from governed engineering intent." }, "created_at": "2026-08-24T16:52:46Z", "updated_at": "2026-08-24T16:52:46Z" }], "coverage_summary": { "method": "Initial draft traceability mapping; code and runtime coverage are not yet applicable.", "generated_at": "2026-08-24T16:52:46Z", "requirement_coverage": 1, "test_coverage": 1 } },
+  "evidence": [],
+  "change_history": [{ "id": "CHANGE-AGENT-001", "version": "0.1.0", "change_type": "CREATED", "summary": "Initial Multi-Agent Orchestration Layer draft.", "reason": "Create the governed P2 control-plane contract before selecting providers, tools or runtime architecture.", "author": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "created_at": "2026-08-24T16:52:46Z" }, { "id": "CHANGE-AGENT-002", "version": "0.1.0", "change_type": "APPROVED", "summary": "Multi-Agent Orchestration Layer approved for controlled pilot design.", "reason": "The Project Sponsor approved the governed Level 0/1 orchestration contract.", "author": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "created_at": "2026-08-24T16:57:28Z", "approval_ref": "APPROVAL-AGENT-001" }],
+  "approvals": [{ "id": "APPROVAL-AGENT-001", "decision": "APPROVED", "approver": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "policy_ref": { "id": "POLICY-SPEC-APPROVAL-001", "kind": "POLICY", "label": "P0 specification approval policy" }, "decided_at": "2026-08-24T16:57:28Z", "specification_version": "0.1.0", "reason": "Approved by the Project Sponsor for controlled read-only pilot design only.", "evidence_refs": [] }],
+  "metadata": { "created_at": "2026-08-24T16:52:46Z", "created_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "updated_at": "2026-08-24T16:57:28Z", "updated_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "classification": "INTERNAL", "language": "en", "tags": ["p2", "agent-control-plane", "orchestration", "governance"] }
+}

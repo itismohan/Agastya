@@ -1,0 +1,638 @@
+{
+  "$schema": "https://agastya.dev/schemas/canonical-specification/1.0.0/schema.json",
+  "schema_version": "1.0.0",
+  "id": "SPEC-PLATFORM-001",
+  "version": "1.0.0",
+  "status": "APPROVED",
+  "title": "Canonical Specification Core",
+  "summary": "Establish the authoritative, versioned and auditable engineering specification model for all AGASTYA product work.",
+  "project": {
+    "id": "PRJ-AGASTYA-CORE",
+    "name": "AGASTYA Core Platform",
+    "tenant_id": "TENANT-AGASTYA",
+    "environment": "DEVELOPMENT"
+  },
+  "intent": {
+    "id": "INTENT-PLATFORM-001",
+    "statement": "Provide a trustworthy source of engineering intent that teams can author, validate, approve, version, retrieve and audit before implementation begins.",
+    "desired_outcomes": [
+      "Every P0 engineering change is governed by a canonical specification revision.",
+      "A user can determine which specification version is authoritative and why.",
+      "Unresolved questions, assumptions and approvals are explicit rather than implicit."
+    ],
+    "success_measures": [
+      {
+        "name": "P0 governed-change coverage",
+        "target": "100% of P0 changes reference an approved specification version",
+        "measurement_method": "Audit each merged P0 change for a traceable specification reference."
+      },
+      {
+        "name": "Specification retrieval reliability",
+        "target": "99.9% successful retrieval during controlled P0 acceptance testing",
+        "measurement_method": "Run API and CLI acceptance tests against approved revisions."
+      }
+    ],
+    "out_of_scope": [
+      "Repository analysis and graph inference.",
+      "Autonomous agent execution.",
+      "Automated deployment decisions."
+    ],
+    "provenance": {
+      "source_type": "HUMAN",
+      "recorded_at": "2026-08-24T10:00:00Z",
+      "recorded_by": {
+        "id": "USR-PLATFORM-OWNER",
+        "display_name": "Platform Owner",
+        "type": "HUMAN"
+      },
+      "confidence": 1,
+      "rationale": "Derived from the AGASTYA product north star and P0 roadmap."
+    }
+  },
+  "problem": {
+    "statement": "Engineering work often begins from fragmented requirements, chat messages and code assumptions, making it difficult to determine the approved intent of a change.",
+    "current_state": "The AGASTYA repository contains the strategic product vision but has no executable, versioned domain object for a governing specification revision.",
+    "impact": [
+      "Implementation may begin without a verified definition of expected behaviour.",
+      "Approvals and audit trails cannot be reconstructed consistently.",
+      "Future traceability and verification features have no authoritative foundation."
+    ],
+    "evidence": [
+      {
+        "id": "DOC-AGASTYA-README",
+        "kind": "DOCUMENT",
+        "uri": "file:///Users/mohankrishnagundala/Documents/Agastya/README.md",
+        "label": "AGASTYA master product specification"
+      }
+    ]
+  },
+  "business_context": {
+    "domain": "AI-native engineering governance",
+    "business_value": "The core prevents AGASTYA from becoming an ungoverned code-generation product by making approved intent an explicit, durable and testable platform object.",
+    "priority": "CRITICAL",
+    "target_users": ["Engineering leaders", "Architects", "Platform engineers", "Developers"],
+    "deadline": "2026-10-31"
+  },
+  "stakeholders": [
+    {
+      "id": "STAKEHOLDER-PLATFORM-OWNER",
+      "name": "Platform Owner",
+      "role": "Product authority for P0",
+      "interests": ["Intent fidelity", "Prioritised delivery", "Clear acceptance evidence"],
+      "influence": "HIGH"
+    },
+    {
+      "id": "STAKEHOLDER-ENGINEERING",
+      "name": "Engineering Team",
+      "role": "P0 implementation team",
+      "interests": ["Stable contracts", "Testable requirements", "Maintainable architecture"],
+      "influence": "HIGH"
+    }
+  ],
+  "actors": [
+    {
+      "id": "ACTOR-PLATFORM-OWNER",
+      "name": "Platform Owner",
+      "type": "HUMAN",
+      "goals": ["Author and approve a governing specification."],
+      "permissions": ["specification:create", "specification:approve"]
+    },
+    {
+      "id": "ACTOR-ENGINEER",
+      "name": "Platform Engineer",
+      "type": "HUMAN",
+      "goals": ["Retrieve an approved specification and implement against it."],
+      "permissions": ["specification:read", "specification:create_revision"]
+    },
+    {
+      "id": "ACTOR-AGASTYA-API",
+      "name": "AGASTYA API",
+      "type": "SYSTEM",
+      "goals": ["Validate and persist immutable specification revisions."],
+      "permissions": ["specification:validate", "specification:store"]
+    }
+  ],
+  "functional_requirements": [
+    {
+      "id": "FREQ-SPEC-001",
+      "title": "Create a canonical specification draft",
+      "statement": "The system shall allow an authorised Editor or Owner to create a DRAFT specification from the canonical schema within a project workspace.",
+      "rationale": "All product work requires a durable object representing engineering intent.",
+      "priority": "MUST",
+      "status": "APPROVED",
+      "acceptance_criteria_refs": ["AC-SPEC-001"],
+      "business_rule_refs": ["RULE-SPEC-001"],
+      "risk_refs": ["RISK-SPEC-001"],
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 1,
+        "rationale": "P0 roadmap requirement."
+      }
+    },
+    {
+      "id": "FREQ-SPEC-002",
+      "title": "Validate a specification revision",
+      "statement": "The system shall validate each proposed revision against the canonical JSON Schema and semantic validation rules, returning actionable findings without mutating the revision.",
+      "rationale": "A specification must be testable and internally coherent before it becomes authoritative.",
+      "priority": "MUST",
+      "status": "APPROVED",
+      "acceptance_criteria_refs": ["AC-SPEC-002"],
+      "business_rule_refs": ["RULE-SPEC-002"],
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 1,
+        "rationale": "P0 roadmap requirement."
+      }
+    },
+    {
+      "id": "FREQ-SPEC-003",
+      "title": "Approve and version a specification",
+      "statement": "The system shall create an immutable, semantically versioned revision when an authorised Owner approves a valid specification with no unresolved blocking questions.",
+      "rationale": "Implementation must be governed by a known, approved and reconstructable source of truth.",
+      "priority": "MUST",
+      "status": "APPROVED",
+      "acceptance_criteria_refs": ["AC-SPEC-003"],
+      "business_rule_refs": ["RULE-SPEC-001", "RULE-SPEC-002"],
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 1,
+        "rationale": "P0 roadmap requirement."
+      }
+    },
+    {
+      "id": "FREQ-SPEC-004",
+      "title": "Compare specification revisions",
+      "statement": "The system shall expose a machine-readable and human-readable diff between any two revisions of the same specification, including changed fields and change rationale.",
+      "rationale": "Change control requires reviewers to understand exactly what has changed.",
+      "priority": "MUST",
+      "status": "APPROVED",
+      "acceptance_criteria_refs": ["AC-SPEC-004"],
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 1,
+        "rationale": "P0 roadmap requirement."
+      }
+    }
+  ],
+  "non_functional_requirements": [
+    {
+      "id": "NFR-SPEC-001",
+      "category": "SECURITY",
+      "statement": "The system shall enforce project-scoped authorisation for every specification read, write, approval and audit operation.",
+      "priority": "MUST",
+      "verification_method": "Automated authorisation tests must prove cross-project access is denied for each API operation.",
+      "target": "Zero successful cross-project requests in the P0 security suite.",
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 1,
+        "rationale": "Tenant and project isolation are non-negotiable product principles."
+      }
+    },
+    {
+      "id": "NFR-SPEC-002",
+      "category": "RELIABILITY",
+      "statement": "The system shall preserve immutable approved revisions and associated audit records for the configured retention period.",
+      "priority": "MUST",
+      "verification_method": "Integration tests must prove that approved revision content cannot be overwritten and all prior revisions remain retrievable.",
+      "target": "100% of tested approved revisions remain byte-identical after later edits.",
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 1,
+        "rationale": "Approval only has value if the approved artefact is immutable."
+      }
+    },
+    {
+      "id": "NFR-SPEC-003",
+      "category": "ACCESSIBILITY",
+      "statement": "The Specification Studio shall support keyboard navigation, labelled form controls and error summaries that identify invalid fields.",
+      "priority": "MUST",
+      "verification_method": "Automated accessibility checks and manual keyboard acceptance testing.",
+      "target": "No critical accessibility violations in P0 acceptance flows.",
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 0.9,
+        "rationale": "Accessibility is an explicit specification dimension."
+      }
+    }
+  ],
+  "business_rules": [
+    {
+      "id": "RULE-SPEC-001",
+      "statement": "Only an authorised Owner may approve or reject a specification revision for the project.",
+      "enforcement": "POLICY",
+      "exceptions": [],
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 1,
+        "rationale": "P0 role model."
+      }
+    },
+    {
+      "id": "RULE-SPEC-002",
+      "statement": "A specification may not transition to APPROVED while it has an OPEN question, an INVALIDATED required assumption, or an ERROR validation finding.",
+      "enforcement": "SYSTEM",
+      "exceptions": ["A question may be marked ACCEPTED_RISK by an authorised Owner with documented rationale."],
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 1,
+        "rationale": "The approved state must be meaningful."
+      }
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CONSTRAINT-SPEC-001",
+      "type": "TECHNICAL",
+      "statement": "Canonical specification content must be represented as JSON conforming to JSON Schema Draft 2020-12 and must remain provider-neutral.",
+      "rationale": "The authoritative specification format must be portable, machine-readable and independent of any AI provider.",
+      "enforced_by": ["FREQ-SPEC-002"]
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASSUMPTION-SPEC-001",
+      "statement": "P0 uses a workspace role model consisting of Owner, Editor and Viewer; finer-grained attributes are deferred to P3.",
+      "status": "VALIDATED",
+      "risk_if_false": "A more complex authorisation model could alter P0 API and policy contracts.",
+      "owner": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+      "validation_evidence_refs": ["EVIDENCE-SPEC-001"]
+    }
+  ],
+  "dependencies": [],
+  "domain_model": {
+    "bounded_contexts": [
+      {
+        "id": "CONTEXT-SPECIFICATION",
+        "name": "Specification Management",
+        "responsibility": "Own the authoritative specification aggregate, revisions, validation state and approval workflow.",
+        "upstream_context_refs": [],
+        "downstream_context_refs": ["CONTEXT-AUDIT"]
+      },
+      {
+        "id": "CONTEXT-AUDIT",
+        "name": "Audit and Evidence",
+        "responsibility": "Record immutable actions and evidence references for reconstructable governance.",
+        "upstream_context_refs": ["CONTEXT-SPECIFICATION"],
+        "downstream_context_refs": []
+      }
+    ],
+    "ubiquitous_language": [
+      { "term": "Specification", "definition": "A versioned engineering contract representing intended behaviour and governing constraints." },
+      { "term": "Revision", "definition": "An immutable snapshot of a specification at a defined semantic version." },
+      { "term": "Evidence", "definition": "A timestamped artefact that supports a verification, decision or observed behaviour." }
+    ]
+  },
+  "entities": [
+    {
+      "id": "ENTITY-SPECIFICATION",
+      "name": "Specification",
+      "description": "The root aggregate that groups immutable revisions under a stable specification identifier.",
+      "attributes": [
+        { "name": "id", "type": "SpecificationId", "required": true, "description": "Stable identifier", "classification": "INTERNAL" },
+        { "name": "currentVersion", "type": "SemVer", "required": true, "description": "Latest revision version", "classification": "INTERNAL" },
+        { "name": "status", "type": "SpecificationStatus", "required": true, "description": "Current lifecycle state", "classification": "INTERNAL" }
+      ],
+      "invariants": ["RULE-SPEC-001", "RULE-SPEC-002"]
+    },
+    {
+      "id": "ENTITY-SPECIFICATION-REVISION",
+      "name": "SpecificationRevision",
+      "description": "The immutable content and metadata of one versioned canonical specification.",
+      "attributes": [
+        { "name": "specificationId", "type": "SpecificationId", "required": true, "description": "Parent specification identifier", "classification": "INTERNAL" },
+        { "name": "version", "type": "SemVer", "required": true, "description": "Immutable semantic version", "classification": "INTERNAL" },
+        { "name": "document", "type": "CanonicalSpecificationJson", "required": true, "description": "Schema-valid canonical document", "classification": "CONFIDENTIAL" },
+        { "name": "contentHash", "type": "SHA256", "required": true, "description": "Hash used to prove immutable content", "classification": "INTERNAL" }
+      ],
+      "invariants": ["RULE-SPEC-002"]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "WORKFLOW-SPEC-APPROVAL",
+      "name": "Create and approve a specification revision",
+      "trigger": "An Owner or Editor identifies a product change that requires an engineering specification.",
+      "steps": [
+        { "sequence": 1, "actor_ref": "ACTOR-PLATFORM-OWNER", "action": "Creates or edits a DRAFT specification.", "result": "A draft revision is persisted.", "rule_refs": [] },
+        { "sequence": 2, "actor_ref": "ACTOR-AGASTYA-API", "action": "Validates schema, lifecycle and semantic rules.", "result": "Validation findings are returned without overwriting approved content.", "rule_refs": ["RULE-SPEC-002"] },
+        { "sequence": 3, "actor_ref": "ACTOR-PLATFORM-OWNER", "action": "Reviews findings and approves the valid revision.", "result": "An immutable APPROVED revision and approval record are created.", "rule_refs": ["RULE-SPEC-001", "RULE-SPEC-002"] }
+      ],
+      "outcomes": ["An approved version is retrievable by API, UI and CLI.", "The approval and content history are auditable."],
+      "error_handling": "Validation errors keep the revision in a pre-approved state and explain the blocked transition."
+    }
+  ],
+  "state_models": [
+    {
+      "id": "STATE-MODEL-SPECIFICATION",
+      "name": "P0 specification lifecycle",
+      "initial_state": "DRAFT",
+      "states": [
+        { "name": "DRAFT", "terminal": false, "description": "Editable working state." },
+        { "name": "VALIDATING", "terminal": false, "description": "Validation is in progress." },
+        { "name": "APPROVED", "terminal": false, "description": "Authoritative implementation contract." },
+        { "name": "SUPERSEDED", "terminal": true, "description": "Replaced by a later approved version." },
+        { "name": "ARCHIVED", "terminal": true, "description": "Retained but no longer active." }
+      ],
+      "transitions": [
+        { "from": "DRAFT", "to": "VALIDATING", "trigger": "validate", "guard_rule_refs": [] },
+        { "from": "VALIDATING", "to": "DRAFT", "trigger": "validation_failed", "guard_rule_refs": [] },
+        { "from": "VALIDATING", "to": "APPROVED", "trigger": "owner_approves", "guard_rule_refs": ["RULE-SPEC-001", "RULE-SPEC-002"] },
+        { "from": "APPROVED", "to": "SUPERSEDED", "trigger": "later_version_approved", "guard_rule_refs": [] },
+        { "from": "DRAFT", "to": "ARCHIVED", "trigger": "owner_archives", "guard_rule_refs": ["RULE-SPEC-001"] }
+      ]
+    }
+  ],
+  "api_contracts": [
+    {
+      "id": "API-CONTRACT-SPECIFICATION-V1",
+      "name": "Specification Core REST API",
+      "protocol": "REST",
+      "source": {
+        "format": "OPENAPI",
+        "uri": "file:///Users/mohankrishnagundala/Documents/Agastya/specifications/contracts/specification-core.openapi.yaml"
+      },
+      "version": "1.0.0",
+      "operations": [
+        { "id": "API-OP-SPEC-CREATE", "method": "POST", "path": "/v1/projects/{projectId}/specifications", "purpose": "Create a draft specification.", "requirement_refs": ["FREQ-SPEC-001"] },
+        { "id": "API-OP-SPEC-VALIDATE", "method": "POST", "path": "/v1/specifications/{specificationId}/revisions/{version}/validations", "purpose": "Validate a requested specification revision.", "requirement_refs": ["FREQ-SPEC-002"] },
+        { "id": "API-OP-SPEC-APPROVE", "method": "POST", "path": "/v1/specifications/{specificationId}/revisions/{version}/approvals", "purpose": "Approve a validated specification revision.", "requirement_refs": ["FREQ-SPEC-003"] },
+        { "id": "API-OP-SPEC-DIFF", "method": "GET", "path": "/v1/specifications/{specificationId}/diff", "purpose": "Compare two specification revisions.", "requirement_refs": ["FREQ-SPEC-004"] }
+      ]
+    }
+  ],
+  "event_contracts": [],
+  "data_models": [
+    {
+      "id": "DATA-MODEL-SPECIFICATION",
+      "name": "Authoritative specification state",
+      "storage_classification": "AUTHORITATIVE",
+      "entity_refs": ["ENTITY-SPECIFICATION", "ENTITY-SPECIFICATION-REVISION"],
+      "retention_policy": "Approved revisions and audit records are retained according to the organisation policy and are never overwritten.",
+      "security_classification": "CONFIDENTIAL"
+    }
+  ],
+  "security_requirements": [
+    {
+      "id": "SEC-SPEC-001",
+      "statement": "Each API operation shall authenticate the caller and authorise access against the project-scoped role model before reading or mutating a specification.",
+      "verification_method": "Automated API integration tests covering unauthenticated, wrong-project, Viewer, Editor and Owner requests.",
+      "priority": "MUST",
+      "control_refs": []
+    }
+  ],
+  "compliance_requirements": [],
+  "performance_requirements": [
+    {
+      "id": "PERF-SPEC-001",
+      "metric": "LATENCY",
+      "target": "p95 validation response under 2 seconds for a 250 KB specification document",
+      "condition": "At 10 concurrent validation requests in the P0 reference environment.",
+      "verification_method": "Automated performance test using a representative valid specification payload."
+    }
+  ],
+  "accessibility_requirements": [
+    {
+      "id": "A11Y-SPEC-001",
+      "statement": "The Specification Studio must expose labelled controls, keyboard-operable field navigation and an accessible validation-error summary.",
+      "verification_method": "Automated accessibility scanning and manual keyboard test of create, validate and approve flows.",
+      "priority": "MUST",
+      "control_refs": ["NFR-SPEC-003"]
+    }
+  ],
+  "observability_requirements": [
+    {
+      "id": "OBS-SPEC-001",
+      "statement": "Create, validate, approve, version-read and diff operations must emit structured audit events with request, project, specification, revision, actor and outcome identifiers.",
+      "verification_method": "Integration tests inspect emitted audit records and confirm all required correlation fields are present.",
+      "priority": "MUST",
+      "control_refs": []
+    }
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "AC-SPEC-001",
+      "requirement_ref": "FREQ-SPEC-001",
+      "title": "An Editor can create a valid draft",
+      "given": "An authenticated Editor belongs to a project and supplies a schema-valid draft document.",
+      "when": "The Editor creates a specification through the API or Studio.",
+      "then": "The system persists a DRAFT revision, returns its identifier and version, and records an audit event.",
+      "verification_type": "AUTOMATED_TEST",
+      "test_requirement_refs": ["TEST-REQ-SPEC-001"]
+    },
+    {
+      "id": "AC-SPEC-002",
+      "requirement_ref": "FREQ-SPEC-002",
+      "title": "Validation explains an approval-blocking error",
+      "given": "A DRAFT revision contains an OPEN question or fails a JSON Schema constraint.",
+      "when": "A user requests validation.",
+      "then": "The system returns a field-level ERROR finding and does not mark the revision APPROVED.",
+      "verification_type": "AUTOMATED_TEST",
+      "test_requirement_refs": ["TEST-REQ-SPEC-002"]
+    },
+    {
+      "id": "AC-SPEC-003",
+      "requirement_ref": "FREQ-SPEC-003",
+      "title": "Only an Owner can create an approved immutable revision",
+      "given": "A schema-valid revision has no unresolved approval blockers.",
+      "when": "An Owner approves it.",
+      "then": "The system stores an APPROVED immutable revision, approval record and content hash; a later edit creates a new revision rather than changing it.",
+      "verification_type": "AUTOMATED_TEST",
+      "test_requirement_refs": ["TEST-REQ-SPEC-003"]
+    },
+    {
+      "id": "AC-SPEC-004",
+      "requirement_ref": "FREQ-SPEC-004",
+      "title": "A reviewer can inspect an exact revision diff",
+      "given": "Two revisions exist for one specification.",
+      "when": "An authorised user requests a diff.",
+      "then": "The response identifies added, removed and changed canonical JSON paths together with declared change rationale.",
+      "verification_type": "AUTOMATED_TEST",
+      "test_requirement_refs": ["TEST-REQ-SPEC-004"]
+    }
+  ],
+  "test_requirements": [
+    {
+      "id": "TEST-REQ-SPEC-001",
+      "scope": "Create-draft path including project membership and audit event creation.",
+      "level": "INTEGRATION",
+      "expected_evidence": "Passing authenticated creation test and persisted audit event record.",
+      "requirement_refs": ["FREQ-SPEC-001"],
+      "acceptance_criteria_refs": ["AC-SPEC-001"]
+    },
+    {
+      "id": "TEST-REQ-SPEC-002",
+      "scope": "Schema validation, unresolved-question validation and immutable validation findings.",
+      "level": "INTEGRATION",
+      "expected_evidence": "Passing and failing validation reports with stable finding identifiers.",
+      "requirement_refs": ["FREQ-SPEC-002"],
+      "acceptance_criteria_refs": ["AC-SPEC-002"]
+    },
+    {
+      "id": "TEST-REQ-SPEC-003",
+      "scope": "Owner approval, unauthorised approval denial and immutable approved revision behaviour.",
+      "level": "SECURITY",
+      "expected_evidence": "Role authorisation and immutability test report.",
+      "requirement_refs": ["FREQ-SPEC-003"],
+      "acceptance_criteria_refs": ["AC-SPEC-003"]
+    },
+    {
+      "id": "TEST-REQ-SPEC-004",
+      "scope": "Revision diff semantics and project access controls.",
+      "level": "API",
+      "expected_evidence": "Stable JSON Patch-style diff test results and cross-project denial test result.",
+      "requirement_refs": ["FREQ-SPEC-004"],
+      "acceptance_criteria_refs": ["AC-SPEC-004"]
+    }
+  ],
+  "deployment_requirements": [
+    {
+      "id": "DEPLOY-SPEC-001",
+      "statement": "The P0 migration must be backward-safe and retain all approved specification revisions and audit events during deployment.",
+      "environment": "PRODUCTION",
+      "verification_method": "Run migration rehearsal with a dataset containing approved revisions and compare revision content hashes before and after migration.",
+      "rollback_requirement": "A failed migration must stop before destructive alteration of authoritative revision records."
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK-SPEC-001",
+      "title": "Overly flexible schema weakens governance",
+      "description": "Permitting arbitrary unstructured core fields would prevent reliable validation, traceability and later executable specifications.",
+      "severity": "HIGH",
+      "likelihood": "POSSIBLE",
+      "mitigation": "Use a closed core schema with namespaced extensions and enforce schema-version compatibility.",
+      "owner": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+      "status": "OPEN"
+    }
+  ],
+  "open_questions": [],
+  "architecture_decisions": [
+    {
+      "id": "ADR-PLATFORM-001",
+      "title": "Use immutable JSON document revisions as the canonical specification representation",
+      "context": "AGASTYA requires a provider-neutral, versioned and machine-readable representation that can be authored by people and consumed by tooling.",
+      "decision": "Persist each approved specification revision as a canonical JSON document validated against a versioned JSON Schema; store queryable projections separately without replacing the canonical document.",
+      "alternatives": [
+        { "name": "Free-form Markdown only", "summary": "Human-readable but insufficient for mechanical validation and reliable graph creation.", "rejection_reason": "Cannot provide a strong machine-readable contract." },
+        { "name": "Provider-specific prompt format", "summary": "Optimised for a particular model provider.", "rejection_reason": "Violates provider-neutral product positioning." }
+      ],
+      "rationale": "A schema-validated JSON document is portable, testable, versionable and compatible with future YAML and visual editing projections.",
+      "consequences": ["P0 requires canonicalisation and schema migration strategy.", "Editors must provide a usable interface over a detailed structured model."],
+      "status": "ACCEPTED",
+      "approver_refs": [{ "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" }]
+    }
+  ],
+  "traceability": {
+    "links": [
+      {
+        "id": "LINK-SPEC-001",
+        "source": { "id": "INTENT-PLATFORM-001", "kind": "INTENT" },
+        "target": { "id": "FREQ-SPEC-001", "kind": "REQUIREMENT" },
+        "relationship_type": "DERIVED_FROM",
+        "confidence": 1,
+        "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T10:00:00Z", "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" }, "confidence": 1, "rationale": "P0 decomposition." },
+        "created_at": "2026-08-24T10:00:00Z",
+        "updated_at": "2026-08-24T10:00:00Z"
+      },
+      {
+        "id": "LINK-SPEC-002",
+        "source": { "id": "FREQ-SPEC-003", "kind": "REQUIREMENT" },
+        "target": { "id": "AC-SPEC-003", "kind": "REQUIREMENT" },
+        "relationship_type": "VALIDATES",
+        "confidence": 1,
+        "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T10:00:00Z", "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" }, "confidence": 1, "rationale": "Acceptance criterion mapping." },
+        "created_at": "2026-08-24T10:00:00Z",
+        "updated_at": "2026-08-24T10:00:00Z"
+      },
+      {
+        "id": "LINK-SPEC-003",
+        "source": { "id": "ADR-PLATFORM-001", "kind": "ARCHITECTURE_DECISION" },
+        "target": { "id": "ENTITY-SPECIFICATION-REVISION", "kind": "COMPONENT" },
+        "relationship_type": "GOVERNS",
+        "confidence": 1,
+        "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T10:00:00Z", "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" }, "confidence": 1, "rationale": "Architecture decision mapping." },
+        "created_at": "2026-08-24T10:00:00Z",
+        "updated_at": "2026-08-24T10:00:00Z"
+      }
+    ],
+    "coverage_summary": {
+      "method": "P0 initial manual traceability mapping; coverage claims are limited to approved P0 requirements.",
+      "generated_at": "2026-08-24T10:00:00Z",
+      "requirement_coverage": 1,
+      "test_coverage": 1
+    }
+  },
+  "evidence": [
+    {
+      "id": "EVIDENCE-SPEC-001",
+      "type": "MANUAL_REVIEW",
+      "status": "VERIFIED",
+      "summary": "P0 role model and canonical JSON direction reviewed for initial scope approval.",
+      "observed_at": "2026-08-24T10:00:00Z",
+      "recorded_at": "2026-08-24T10:00:00Z",
+      "subject_refs": [{ "id": "ASSUMPTION-SPEC-001", "kind": "ASSUMPTION" }],
+      "specification_version": "1.0.0",
+      "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T10:00:00Z", "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" }, "confidence": 0.9, "rationale": "Initial product scope review." }
+    }
+  ],
+  "change_history": [
+    {
+      "id": "CHANGE-SPEC-001",
+      "version": "1.0.0",
+      "change_type": "CREATED",
+      "summary": "Initial canonical specification core definition.",
+      "reason": "Establish the P0 governing contract before implementation.",
+      "author": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+      "created_at": "2026-08-24T10:00:00Z"
+    },
+    {
+      "id": "CHANGE-SPEC-002",
+      "version": "1.0.0",
+      "change_type": "APPROVED",
+      "summary": "Initial P0 specification approved by the Project Sponsor.",
+      "reason": "The Project Sponsor approved the P0 Canonical Specification Core for implementation.",
+      "author": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" },
+      "created_at": "2026-08-24T16:44:57Z",
+      "approval_ref": "APPROVAL-SPEC-001"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "APPROVAL-SPEC-001",
+      "decision": "APPROVED",
+      "approver": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" },
+      "policy_ref": { "id": "POLICY-SPEC-APPROVAL-001", "kind": "POLICY", "label": "P0 specification approval policy" },
+      "decided_at": "2026-08-24T16:44:57Z",
+      "specification_version": "1.0.0",
+      "reason": "Approved by the Project Sponsor as the implementation contract for P0 Canonical Specification Core.",
+      "evidence_refs": ["EVIDENCE-SPEC-001"]
+    }
+  ],
+  "metadata": {
+    "created_at": "2026-08-24T10:00:00Z",
+    "created_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+    "updated_at": "2026-08-24T16:44:57Z",
+    "updated_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" },
+    "classification": "INTERNAL",
+    "language": "en",
+    "tags": ["p0", "specification-core", "governance"]
+  }
+}

@@ -1,0 +1,82 @@
+flowchart LR
+  classDef client fill:#F3F4F6,stroke:#4B5563,color:#111827,stroke-width:1.5px
+  classDef core fill:#DBEAFE,stroke:#1D4ED8,color:#111827,stroke-width:1.5px
+  classDef control fill:#FEE2E2,stroke:#B91C1C,color:#111827,stroke-width:1.5px
+  classDef evidence fill:#DCFCE7,stroke:#15803D,color:#111827,stroke-width:1.5px
+  classDef runtime fill:#EDE9FE,stroke:#6D28D9,color:#111827,stroke-width:1.5px
+  classDef ops fill:#FEF3C7,stroke:#B45309,color:#111827,stroke-width:1.5px
+  classDef note fill:#FFFFFF,stroke:#6B7280,color:#374151,stroke-dasharray: 4 3
+
+  C[Client: Web / CLI / SDK / approved integration]:::client
+
+  subgraph FOUNDATION[Foundational product model]
+    S[SPEC-001\nCanonical Specification Core]:::core
+    W[SPEC-002\nProject Workspace Boundary]:::core
+  end
+
+  subgraph ACCESS[Access and governance control plane]
+    G[SPEC-007\nUnified API Gateway & Client SDK]:::core
+    P[SPEC-009\nEnterprise Security & RBAC Governance]:::control
+    V[SPEC-005\nSecure Credential & Secret Vault]:::control
+  end
+
+  subgraph EXECUTION[Governed execution plane]
+    O[SPEC-003\nMulti-Agent Orchestration]:::runtime
+    X[SPEC-006\nPlugin & Tool Extension Runtime]:::runtime
+    R[SPEC-008\nReal-Time Streaming & WebSocket Subscriptions]:::runtime
+  end
+
+  subgraph TRUST[Evidence and operational truth]
+    L[SPEC-004\nEvent-Driven Audit & Evidence Ledger]:::evidence
+    T[SPEC-010\nObservability, Telemetry & Distributed Tracing]:::ops
+    H[SPEC-011\nHigh Availability & Disaster Recovery]:::ops
+  end
+
+  C -->|authenticated API request / response| G
+  G -->|workspace command or query| W
+  G -->|specification command or query| S
+  W -->|membership and exact project scope| P
+  G -->|identity, scope and action| P
+  P -->|allow / deny / waiting approval| G
+  P -->|effective task / tool capability| O
+  P -->|least-privilege access decision| V
+  P -->|session and channel authorisation| R
+
+  S -->|approved revision, requirements, policy refs| O
+  W -->|tenant / project boundary| S
+  W -->|project-scoped execution context| O
+  O -->|durable task and operation state| L
+  O -->|governed tool invocation grant| X
+  X -->|opaque, purpose-bound lease request| V
+  V -->|lease lifecycle evidence| L
+  X -->|tool invocation, output and containment evidence| L
+  O -->|task, policy and approval evidence| L
+  G -->|material API command / denial evidence| L
+  P -->|policy, role and privileged-access evidence| L
+  S -->|specification / approval / traceability evidence| L
+
+  L -->|outbox of safe project events| R
+  R -->|authorised project-scoped notification| C
+  G -->|durable operation resource and recovery fallback| C
+
+  G -->|correlation context| T
+  O -->|trace, task and retry context| T
+  X -->|runtime, sandbox and invocation telemetry| T
+  V -->|safe lease / revocation telemetry| T
+  R -->|session, replay and backpressure telemetry| T
+  P -->|decision, denial and policy telemetry| T
+  L -->|ledger / outbox health telemetry| T
+  T -->|safe operational references; never verification truth| L
+
+  H -.->|recovery profile, backup/restore and validation| P
+  H -.->|trust/key readiness before sensitive writes| V
+  H -.->|integrity, outbox and reconciliation validation| L
+  H -.->|API, task, tool and stream recovery sequencing| G
+  H -.->|resume and reconcile durable execution| O
+  H -.->|resync / recovery state| R
+  H -->|recovery exercise and incident evidence| L
+  H -->|recovery objective and state telemetry| T
+
+  N[Scope: approved SPEC-001 to SPEC-011\nSPEC-012 remains draft and is excluded]:::note
+  N -.-> S
+

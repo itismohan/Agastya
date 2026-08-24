@@ -1,0 +1,64 @@
+flowchart TB
+  classDef client fill:#F3F4F6,stroke:#4B5563,color:#111827,stroke-width:1.5px
+  classDef foundation fill:#DBEAFE,stroke:#1D4ED8,color:#111827,stroke-width:1.5px
+  classDef control fill:#FEE2E2,stroke:#B91C1C,color:#111827,stroke-width:1.5px
+  classDef runtime fill:#EDE9FE,stroke:#6D28D9,color:#111827,stroke-width:1.5px
+  classDef evidence fill:#DCFCE7,stroke:#15803D,color:#111827,stroke-width:1.5px
+  classDef ops fill:#FEF3C7,stroke:#B45309,color:#111827,stroke-width:1.5px
+
+  C[Web / CLI / SDK / approved integration]:::client
+  G[SPEC-007\nUnified API Gateway & Client SDK]:::foundation
+
+  subgraph F[Foundational model]
+    W[SPEC-002\nProject Workspace Boundary]:::foundation
+    S[SPEC-001\nCanonical Specification Core]:::foundation
+  end
+
+  subgraph P[Cross-cutting governance]
+    RBAC[SPEC-009\nEnterprise Security & RBAC]:::control
+    VAULT[SPEC-005\nCredential & Secret Vault]:::control
+  end
+
+  subgraph E[Execution and delivery]
+    ORCH[SPEC-003\nMulti-Agent Orchestration]:::runtime
+    EXT[SPEC-006\nPlugin & Tool Runtime]:::runtime
+    RT[SPEC-008\nReal-Time Streaming]:::runtime
+  end
+
+  LEDGER[SPEC-004\nAudit & Evidence Ledger]:::evidence
+  OBS[SPEC-010\nObservability & Tracing]:::ops
+  DR[SPEC-011\nHigh Availability & Disaster Recovery]:::ops
+
+  C --> G
+  W --> G
+  W --> S
+  W --> ORCH
+  S --> ORCH
+  S --> LEDGER
+  RBAC --> G
+  RBAC --> VAULT
+  RBAC --> ORCH
+  RBAC --> EXT
+  RBAC --> RT
+  G --> LEDGER
+  ORCH --> EXT
+  ORCH --> LEDGER
+  EXT --> VAULT
+  EXT --> LEDGER
+  VAULT --> LEDGER
+  LEDGER --> RT
+  RT --> C
+  G --> OBS
+  ORCH --> OBS
+  EXT --> OBS
+  VAULT --> OBS
+  RT --> OBS
+  LEDGER --> OBS
+  RBAC --> OBS
+  DR -. recovery / validation .-> G
+  DR -. recovery / validation .-> RBAC
+  DR -. recovery / validation .-> VAULT
+  DR -. recovery / reconciliation .-> LEDGER
+  DR -. resume safely .-> ORCH
+  DR -. resync / recovery state .-> RT
+  DR --> OBS

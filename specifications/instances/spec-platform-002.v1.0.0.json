@@ -1,0 +1,273 @@
+{
+  "$schema": "https://agastya.dev/schemas/canonical-specification/1.0.0/schema.json",
+  "schema_version": "1.0.0",
+  "id": "SPEC-PLATFORM-002",
+  "version": "1.0.0",
+  "status": "APPROVED",
+  "title": "Project Workspace Boundary",
+  "summary": "Define project ownership, membership, least-privilege roles and data isolation for the P0 Canonical Specification Core.",
+  "project": {
+    "id": "PRJ-AGASTYA-CORE",
+    "name": "AGASTYA Core Platform",
+    "tenant_id": "TENANT-AGASTYA",
+    "environment": "DEVELOPMENT"
+  },
+  "intent": {
+    "id": "INTENT-WORKSPACE-001",
+    "statement": "Ensure every P0 specification and governance record belongs to one project and can be accessed only by an authorised member of that project.",
+    "desired_outcomes": [
+      "Project-scoped engineering artefacts are isolated from non-members and other projects.",
+      "P0 roles and ownership transitions are explicit, safe and auditable."
+    ],
+    "success_measures": [
+      {
+        "name": "Cross-project access denial",
+        "target": "100% denial in the automated security suite",
+        "measurement_method": "Execute every P0 read and mutation with a principal who is not a member of the resource project."
+      },
+      {
+        "name": "Owner continuity",
+        "target": "0 successful mutations that leave a project without an active Owner",
+        "measurement_method": "Run single-threaded and concurrent membership-revocation and ownership-transfer tests."
+      }
+    ],
+    "out_of_scope": [
+      "Enterprise SSO, SCIM and group provisioning.",
+      "Organisation hierarchy and custom roles.",
+      "Attribute-based access control."
+    ],
+    "provenance": {
+      "source_type": "HUMAN",
+      "recorded_at": "2026-08-24T16:44:57Z",
+      "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" },
+      "confidence": 0.95,
+      "rationale": "Finalised P0 child specification following approval of the Canonical Specification Core."
+    }
+  },
+  "problem": {
+    "statement": "A specification governance platform cannot be trusted without a server-side project boundary that prevents unauthorised reads, writes and approvals.",
+    "current_state": "The project currently has a P0 role concept but no approved workspace authorisation contract, persistence model or ownership-continuity rule.",
+    "impact": [
+      "Unauthorised access could disclose or alter engineering intent.",
+      "The platform could incorrectly attribute approvals or allow an ownerless project.",
+      "Future tenant-level governance would rest on an insecure project boundary."
+    ],
+    "evidence": [
+      { "id": "SPEC-PLATFORM-001", "kind": "SPECIFICATION", "version": "1.0.0", "uri": "file:///Users/mohankrishnagundala/Documents/Agastya/specifications/SPEC-PLATFORM-001.md", "label": "Approved Canonical Specification Core" }
+    ]
+  },
+  "business_context": {
+    "domain": "AI-native engineering governance",
+    "business_value": "A secure project boundary is a prerequisite for trustworthy specification ownership, auditability and later enterprise multi-tenancy.",
+    "priority": "CRITICAL",
+    "target_users": ["Project Owner", "Project Editor", "Project Viewer", "Platform Engineer"]
+  },
+  "stakeholders": [
+    { "id": "STAKEHOLDER-WORKSPACE-OWNER", "name": "Project Owner", "role": "Approves specifications and manages membership", "interests": ["Least privilege", "Operational continuity", "Auditability"], "influence": "HIGH" },
+    { "id": "STAKEHOLDER-WORKSPACE-ENGINEERING", "name": "Platform Engineering Team", "role": "Implements and operates P0 access controls", "interests": ["Clear contracts", "Testable invariants", "Secure persistence"], "influence": "HIGH" }
+  ],
+  "actors": [
+    { "id": "ACTOR-WORKSPACE-OWNER", "name": "Project Owner", "type": "HUMAN", "goals": ["Manage members and approve project specifications."], "permissions": ["project:manage_members", "specification:approve"] },
+    { "id": "ACTOR-WORKSPACE-EDITOR", "name": "Project Editor", "type": "HUMAN", "goals": ["Create, revise and validate engineering specifications."], "permissions": ["specification:create", "specification:revise", "specification:validate"] },
+    { "id": "ACTOR-WORKSPACE-VIEWER", "name": "Project Viewer", "type": "HUMAN", "goals": ["Read authoritative specifications and evidence."], "permissions": ["specification:read", "audit:read"] },
+    { "id": "ACTOR-WORKSPACE-AUTH", "name": "Workspace Authorisation Service", "type": "SYSTEM", "goals": ["Evaluate project membership and capability before every P0 action."], "permissions": ["authorization:evaluate"] }
+  ],
+  "functional_requirements": [
+    {
+      "id": "FREQ-WORKSPACE-001",
+      "title": "Grant project membership",
+      "statement": "The system shall allow an active Owner to add a verified principal as an Owner, Editor or Viewer in the Owner's project.",
+      "priority": "MUST",
+      "status": "APPROVED",
+      "acceptance_criteria_refs": ["AC-WORKSPACE-001", "AC-WORKSPACE-002"],
+      "business_rule_refs": ["RULE-WORKSPACE-003"],
+      "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "P0 workspace role model." }
+    },
+    {
+      "id": "FREQ-WORKSPACE-002",
+      "title": "Enforce project-scoped authorisation",
+      "statement": "The system shall evaluate verified principal membership, role capability and the server-resolved target project before every P0 project-scoped query or command.",
+      "priority": "MUST",
+      "status": "APPROVED",
+      "acceptance_criteria_refs": ["AC-WORKSPACE-003", "AC-WORKSPACE-004"],
+      "business_rule_refs": ["RULE-WORKSPACE-001", "RULE-WORKSPACE-002", "RULE-WORKSPACE-005"],
+      "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "P0 tenant and project isolation requirement." }
+    },
+    {
+      "id": "FREQ-WORKSPACE-003",
+      "title": "Protect final active Owner",
+      "statement": "The system shall reject a membership revocation or role change that would remove or demote the final active Owner in a project.",
+      "priority": "MUST",
+      "status": "APPROVED",
+      "acceptance_criteria_refs": ["AC-WORKSPACE-005"],
+      "business_rule_refs": ["RULE-WORKSPACE-003"],
+      "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Resolved P0 ownership-continuity policy." }
+    },
+    {
+      "id": "FREQ-WORKSPACE-004",
+      "title": "Transfer sole ownership safely",
+      "statement": "The system shall allow an active Owner to atomically transfer ownership to an active Editor in the same project by promoting the target and demoting the initiator.",
+      "priority": "MUST",
+      "status": "APPROVED",
+      "acceptance_criteria_refs": ["AC-WORKSPACE-006"],
+      "business_rule_refs": ["RULE-WORKSPACE-004"],
+      "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.9, "rationale": "Resolved open question for P0 scope." }
+    },
+    {
+      "id": "FREQ-WORKSPACE-005",
+      "title": "Audit membership and access decisions",
+      "statement": "The system shall append a structured audit event for every membership mutation and denied project-scoped command without storing secret or restricted request payloads.",
+      "priority": "MUST",
+      "status": "APPROVED",
+      "acceptance_criteria_refs": ["AC-WORKSPACE-007"],
+      "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "P0 auditability requirement." }
+    },
+    {
+      "id": "FREQ-WORKSPACE-006",
+      "title": "List authorised project memberships",
+      "statement": "The system shall allow an authorised project member to list active memberships for their project without exposing membership information from any other project.",
+      "priority": "SHOULD",
+      "status": "APPROVED",
+      "acceptance_criteria_refs": ["AC-WORKSPACE-008"],
+      "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.95, "rationale": "Workspace visibility requirement." }
+    }
+  ],
+  "non_functional_requirements": [
+    {
+      "id": "NFR-WORKSPACE-001",
+      "category": "SECURITY",
+      "statement": "The authorisation layer shall default-deny any P0 operation when verified project membership or the required capability is absent.",
+      "priority": "MUST",
+      "verification_method": "Execute a complete Owner, Editor, Viewer, non-member and unauthenticated role matrix for every P0 endpoint.",
+      "target": "Zero unauthorised successful responses.",
+      "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Least-privilege P0 baseline." }
+    },
+    {
+      "id": "NFR-WORKSPACE-002",
+      "category": "RELIABILITY",
+      "statement": "Membership changes and ownership transfers shall use transactional consistency and optimistic concurrency to avoid lost updates or an ownerless project.",
+      "priority": "MUST",
+      "verification_method": "Concurrent integration tests exercise revoke, demote and transfer requests against the same membership versions.",
+      "target": "No committed transaction violates the active-Owner invariant.",
+      "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.95, "rationale": "Ownership change must be safe under concurrency." }
+    }
+  ],
+  "business_rules": [
+    { "id": "RULE-WORKSPACE-001", "statement": "A Viewer may never create, alter, validate, approve or archive a specification revision.", "enforcement": "SYSTEM", "exceptions": [], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "P0 least-privilege role policy." } },
+    { "id": "RULE-WORKSPACE-002", "statement": "An Editor may never approve, archive or manage membership.", "enforcement": "SYSTEM", "exceptions": [], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Separation of authoring and approval responsibilities." } },
+    { "id": "RULE-WORKSPACE-003", "statement": "A membership mutation that removes or demotes the final active Owner must be rejected with LAST_OWNER_PROTECTED.", "enforcement": "SYSTEM", "exceptions": [], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Project ownership continuity." } },
+    { "id": "RULE-WORKSPACE-004", "statement": "Ownership transfer requires an Owner initiator and an active Editor target in the same project and atomically promotes the target while demoting the initiator.", "enforcement": "SYSTEM", "exceptions": [], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 0.9, "rationale": "Resolved sole-Owner transfer policy." } },
+    { "id": "RULE-WORKSPACE-005", "statement": "Project and tenant scope used in persistence queries must derive from verified identity context and server-side resource resolution, not a mutable client role or tenant field.", "enforcement": "SYSTEM", "exceptions": [], "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Defence in depth for tenant isolation." } }
+  ],
+  "constraints": [
+    { "id": "CONSTRAINT-WORKSPACE-001", "type": "SECURITY", "statement": "P0 roles are fixed to Owner, Editor and Viewer; custom roles and ABAC rules are not introduced in this release.", "rationale": "A small role model enables strong, comprehensively tested authorisation before enterprise policy complexity is added.", "enforced_by": ["FREQ-WORKSPACE-002"] }
+  ],
+  "assumptions": [
+    { "id": "ASSUMPTION-WORKSPACE-001", "statement": "The upstream identity layer supplies a verified stable principal identifier and verified tenant context for every authenticated request.", "status": "UNVALIDATED", "risk_if_false": "Workspace authorisation cannot make a reliable principal-to-project decision.", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" } }
+  ],
+  "dependencies": [
+    { "id": "DEPENDENCY-WORKSPACE-001", "name": "Verified identity context", "type": "EXTERNAL_SERVICE", "status": "UNKNOWN", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "risk": "The selected P0 application scaffold must expose verified principal identity to server-side API handlers." }
+  ],
+  "domain_model": {
+    "bounded_contexts": [
+      { "id": "CONTEXT-WORKSPACE", "name": "Workspace Management", "responsibility": "Own project identity, active membership, role grants, ownership transfer and authorisation decisions.", "upstream_context_refs": [], "downstream_context_refs": ["CONTEXT-SPECIFICATION"] },
+      { "id": "CONTEXT-SPECIFICATION", "name": "Specification Management", "responsibility": "Own canonical specification revisions and invoke Workspace Management before each project-scoped command.", "upstream_context_refs": ["CONTEXT-WORKSPACE"], "downstream_context_refs": ["CONTEXT-AUDIT"] },
+      { "id": "CONTEXT-AUDIT", "name": "Audit and Evidence", "responsibility": "Persist append-only project-scoped audit events and evidence pointers.", "upstream_context_refs": ["CONTEXT-WORKSPACE", "CONTEXT-SPECIFICATION"], "downstream_context_refs": [] }
+    ],
+    "ubiquitous_language": [
+      { "term": "Project", "definition": "The P0 isolation boundary for memberships, specifications, governance records and audit events." },
+      { "term": "Membership", "definition": "A project-scoped role grant held by one verified principal." },
+      { "term": "Capability", "definition": "A server-side permission needed to perform a specific P0 action." },
+      { "term": "Ownership transfer", "definition": "An atomic role transition that promotes an active Editor and demotes the initiating Owner." }
+    ]
+  },
+  "entities": [
+    { "id": "ENTITY-PROJECT", "name": "Project", "description": "The durable engineering workspace and isolation boundary.", "attributes": [{ "name": "id", "type": "ProjectId", "required": true, "description": "Stable project identifier", "classification": "INTERNAL" }, { "name": "tenantId", "type": "TenantId", "required": true, "description": "Verified tenant isolation key", "classification": "INTERNAL" }], "invariants": ["RULE-WORKSPACE-005"] },
+    { "id": "ENTITY-PROJECT-MEMBERSHIP", "name": "ProjectMembership", "description": "An active or revoked project-scoped role grant.", "attributes": [{ "name": "principalId", "type": "PrincipalId", "required": true, "description": "Verified subject identifier", "classification": "CONFIDENTIAL" }, { "name": "role", "type": "WorkspaceRole", "required": true, "description": "Owner, Editor or Viewer", "classification": "INTERNAL" }, { "name": "version", "type": "Integer", "required": true, "description": "Optimistic concurrency version", "classification": "INTERNAL" }], "invariants": ["RULE-WORKSPACE-003", "RULE-WORKSPACE-004"] }
+  ],
+  "workflows": [
+    { "id": "WORKFLOW-WORKSPACE-TRANSFER", "name": "Transfer sole project ownership", "trigger": "An active Owner requests operational handover.", "steps": [{ "sequence": 1, "actor_ref": "ACTOR-WORKSPACE-OWNER", "action": "Submits an ownership-transfer request naming an active Editor and current membership versions.", "result": "Request is authenticated and correlated.", "rule_refs": ["RULE-WORKSPACE-004"] }, { "sequence": 2, "actor_ref": "ACTOR-WORKSPACE-AUTH", "action": "Verifies initiator Owner capability and target project membership.", "result": "Authorisation succeeds or returns a denial without mutation.", "rule_refs": ["RULE-WORKSPACE-004", "RULE-WORKSPACE-005"] }, { "sequence": 3, "actor_ref": "ACTOR-WORKSPACE-AUTH", "action": "Atomically promotes target to Owner and demotes initiator to Editor using optimistic concurrency checks.", "result": "Project retains an active Owner and correlated audit event is appended.", "rule_refs": ["RULE-WORKSPACE-003", "RULE-WORKSPACE-004"] }], "outcomes": ["Ownership has moved without an ownerless state.", "Both membership versions and the audit event are retrievable."], "error_handling": "A stale membership version produces a conflict; an invalid target or capability produces a policy error; neither outcome mutates state." }
+  ],
+  "state_models": [
+    { "id": "STATE-MODEL-MEMBERSHIP", "name": "Project membership lifecycle", "initial_state": "ACTIVE", "states": [{ "name": "ACTIVE", "terminal": false, "description": "Membership grants current project role." }, { "name": "REVOKED", "terminal": true, "description": "Membership no longer grants project access." }], "transitions": [{ "from": "ACTIVE", "to": "REVOKED", "trigger": "owner_revokes", "guard_rule_refs": ["RULE-WORKSPACE-003"] }] }
+  ],
+  "api_contracts": [
+    { "id": "API-CONTRACT-WORKSPACE-V1", "name": "Workspace Management REST API", "protocol": "REST", "source": { "format": "OPENAPI", "uri": "file:///Users/mohankrishnagundala/Documents/Agastya/specifications/contracts/workspace-management.openapi.yaml" }, "version": "1.0.0", "operations": [{ "id": "API-OP-WORKSPACE-GRANT", "method": "POST", "path": "/v1/projects/{projectId}/memberships", "purpose": "Grant project membership.", "requirement_refs": ["FREQ-WORKSPACE-001"] }, { "id": "API-OP-WORKSPACE-TRANSFER", "method": "POST", "path": "/v1/projects/{projectId}/ownership-transfers", "purpose": "Atomically transfer project ownership.", "requirement_refs": ["FREQ-WORKSPACE-004"] }] }
+  ],
+  "event_contracts": [],
+  "data_models": [
+    { "id": "DATA-MODEL-WORKSPACE", "name": "Authoritative workspace state", "storage_classification": "AUTHORITATIVE", "entity_refs": ["ENTITY-PROJECT", "ENTITY-PROJECT-MEMBERSHIP"], "retention_policy": "Active and revoked membership history and associated audit records follow organisation retention policy and are never rewritten.", "security_classification": "CONFIDENTIAL" }
+  ],
+  "security_requirements": [
+    { "id": "SEC-WORKSPACE-001", "statement": "Every project-scoped API operation shall authenticate the principal and server-side authorise the requested capability against active membership in the resource project.", "verification_method": "Automated role matrix and two-project isolation tests for every endpoint.", "priority": "MUST", "control_refs": ["NFR-WORKSPACE-001"] },
+    { "id": "SEC-WORKSPACE-002", "statement": "The service shall not disclose whether a resource exists outside the caller's project scope.", "verification_method": "Cross-project access tests assert a generic not-found or capability-denied response according to the published error policy.", "priority": "MUST", "control_refs": [] }
+  ],
+  "compliance_requirements": [],
+  "performance_requirements": [],
+  "accessibility_requirements": [],
+  "observability_requirements": [
+    { "id": "OBS-WORKSPACE-001", "statement": "Membership and authorisation operations shall emit structured audit events with request, project, actor, target, action, outcome and timestamp fields.", "verification_method": "Integration tests inspect persisted events and verify sensitive data is absent.", "priority": "MUST", "control_refs": ["FREQ-WORKSPACE-005"] }
+  ],
+  "acceptance_criteria": [
+    { "id": "AC-WORKSPACE-001", "requirement_ref": "FREQ-WORKSPACE-001", "title": "Owner grants Editor membership", "given": "An active Owner and a verified principal who is not a member of the project.", "when": "The Owner creates an Editor membership.", "then": "A single active Editor membership exists and a MEMBERSHIP_GRANTED audit event is recorded.", "verification_type": "AUTOMATED_TEST", "test_requirement_refs": ["TEST-REQ-WORKSPACE-001"] },
+    { "id": "AC-WORKSPACE-002", "requirement_ref": "FREQ-WORKSPACE-001", "title": "Editor cannot manage membership", "given": "An active Editor in a project.", "when": "The Editor attempts to create, change or revoke membership.", "then": "The service returns CAPABILITY_DENIED, makes no change and audits the denial.", "verification_type": "SECURITY_TEST", "test_requirement_refs": ["TEST-REQ-WORKSPACE-001"] },
+    { "id": "AC-WORKSPACE-003", "requirement_ref": "FREQ-WORKSPACE-002", "title": "Viewer is denied specification mutation", "given": "A Viewer with an otherwise valid specification identifier.", "when": "The Viewer requests draft creation, validation, revision or approval.", "then": "The request is denied before any specification command runs.", "verification_type": "SECURITY_TEST", "test_requirement_refs": ["TEST-REQ-WORKSPACE-002"] },
+    { "id": "AC-WORKSPACE-004", "requirement_ref": "FREQ-WORKSPACE-002", "title": "Cross-project access is denied", "given": "A member of Project A and a resource belonging to Project B.", "when": "The member reads or mutates the Project B resource.", "then": "The service denies access without revealing the resource's existence.", "verification_type": "SECURITY_TEST", "test_requirement_refs": ["TEST-REQ-WORKSPACE-002"] },
+    { "id": "AC-WORKSPACE-005", "requirement_ref": "FREQ-WORKSPACE-003", "title": "Final Owner is protected", "given": "A project with exactly one active Owner.", "when": "That Owner attempts to revoke or demote their membership.", "then": "The command fails with LAST_OWNER_PROTECTED and membership state remains unchanged.", "verification_type": "AUTOMATED_TEST", "test_requirement_refs": ["TEST-REQ-WORKSPACE-003"] },
+    { "id": "AC-WORKSPACE-006", "requirement_ref": "FREQ-WORKSPACE-004", "title": "Sole ownership transfers atomically", "given": "An Owner and active Editor with current membership versions in the same project.", "when": "The Owner requests ownership transfer.", "then": "The target becomes Owner, the initiator becomes Editor and both changes plus an audit event commit atomically.", "verification_type": "AUTOMATED_TEST", "test_requirement_refs": ["TEST-REQ-WORKSPACE-003"] },
+    { "id": "AC-WORKSPACE-007", "requirement_ref": "FREQ-WORKSPACE-005", "title": "Audit records membership and denial outcomes", "given": "A successful or denied membership operation.", "when": "The request completes.", "then": "An append-only audit event contains project, actor, action, target, outcome, request ID and timestamp without secret data.", "verification_type": "AUTOMATED_TEST", "test_requirement_refs": ["TEST-REQ-WORKSPACE-004"] },
+    { "id": "AC-WORKSPACE-008", "requirement_ref": "FREQ-WORKSPACE-006", "title": "Members see only their project membership list", "given": "A Viewer in Project A and memberships in Projects A and B.", "when": "The Viewer lists Project A memberships.", "then": "Only Project A memberships are returned.", "verification_type": "AUTOMATED_TEST", "test_requirement_refs": ["TEST-REQ-WORKSPACE-002"] }
+  ],
+  "test_requirements": [
+    { "id": "TEST-REQ-WORKSPACE-001", "scope": "Owner and Editor membership grant and management permissions.", "level": "SECURITY", "expected_evidence": "Role-matrix API test report and membership audit-event fixtures.", "requirement_refs": ["FREQ-WORKSPACE-001"], "acceptance_criteria_refs": ["AC-WORKSPACE-001", "AC-WORKSPACE-002"] },
+    { "id": "TEST-REQ-WORKSPACE-002", "scope": "Viewer, non-member and cross-project authorisation for all workspace and specification endpoints.", "level": "SECURITY", "expected_evidence": "Two-project denial test report with no state mutations or resource-existence disclosure.", "requirement_refs": ["FREQ-WORKSPACE-002", "FREQ-WORKSPACE-006"], "acceptance_criteria_refs": ["AC-WORKSPACE-003", "AC-WORKSPACE-004", "AC-WORKSPACE-008"] },
+    { "id": "TEST-REQ-WORKSPACE-003", "scope": "Last-Owner protection and ownership-transfer transactional concurrency.", "level": "INTEGRATION", "expected_evidence": "Concurrent mutation test results proving no committed ownerless state.", "requirement_refs": ["FREQ-WORKSPACE-003", "FREQ-WORKSPACE-004"], "acceptance_criteria_refs": ["AC-WORKSPACE-005", "AC-WORKSPACE-006"] },
+    { "id": "TEST-REQ-WORKSPACE-004", "scope": "Append-only membership and authorisation audit records.", "level": "INTEGRATION", "expected_evidence": "Audit event schema and redaction test report.", "requirement_refs": ["FREQ-WORKSPACE-005"], "acceptance_criteria_refs": ["AC-WORKSPACE-007"] }
+  ],
+  "deployment_requirements": [],
+  "risks": [
+    { "id": "RISK-WORKSPACE-001", "title": "Identity context does not provide stable verified principal identifiers", "description": "The P0 authorisation service cannot safely evaluate membership if identity claims are not verified and stable.", "severity": "HIGH", "likelihood": "POSSIBLE", "mitigation": "Select and validate the P0 identity integration before implementing the API; fail closed if identity context is absent.", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "status": "OPEN" },
+    { "id": "RISK-WORKSPACE-002", "title": "Race condition breaks ownership continuity", "description": "Concurrent membership updates could remove the final Owner without transactional safeguards.", "severity": "HIGH", "likelihood": "UNLIKELY", "mitigation": "Use transaction isolation, optimistic concurrency versions and integration tests covering conflicting mutations.", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "status": "OPEN" }
+  ],
+  "open_questions": [
+    { "id": "QUESTION-WORKSPACE-001", "question": "Should a sole Owner be able to transfer ownership to another member?", "status": "RESOLVED", "owner": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "impact_if_unresolved": "Membership API semantics and recovery behaviour would remain incomplete.", "resolution": "Yes. An Owner may atomically promote an active Editor in the same project and demote themselves to Editor, preserving at least one active Owner.", "resolved_at": "2026-08-24T16:44:57Z" }
+  ],
+  "architecture_decisions": [
+    { "id": "ADR-WORKSPACE-001", "title": "Enforce P0 authorisation in a server-side Workspace Authorisation Service", "context": "UI visibility controls cannot provide a security boundary, and every P0 artefact must be project-scoped.", "decision": "Resolve verified identity, resource project and active membership on the server for each P0 command and query; map Owner, Editor and Viewer to a fixed capability matrix.", "alternatives": [{ "name": "Client-side role enforcement", "summary": "The UI hides unauthorised controls.", "rejection_reason": "Client controls can be bypassed and do not protect APIs or data queries." }, { "name": "ABAC in P0", "summary": "Use dynamic attributes and policy engine from the first release.", "rejection_reason": "Exceeds P0 scope and prevents a small exhaustive security test matrix." }], "rationale": "The fixed server-side role model produces a simple, auditable and testable P0 boundary while preserving a later path to enterprise policies.", "consequences": ["P0 must provide a stable verified principal context.", "Custom roles and organisational policies are deferred."], "status": "PROPOSED", "approver_refs": [] },
+    { "id": "ADR-WORKSPACE-002", "title": "Use atomic promote-and-demote ownership transfer", "context": "The project must allow a sole Owner to hand over responsibility without permitting an ownerless state.", "decision": "Ownership transfer is a single transaction that promotes an active Editor target to Owner and demotes the initiating Owner to Editor using optimistic concurrency checks.", "alternatives": [{ "name": "Disallow sole-Owner transfer", "summary": "Avoids transfer complexity.", "rejection_reason": "Creates avoidable operational lock-in." }, { "name": "Revoke Owner before promoting target", "summary": "Two sequential membership operations.", "rejection_reason": "Can leave the project ownerless if the second operation fails." }], "rationale": "An atomic swap preserves continuity and produces one coherent audit trail.", "consequences": ["The Workspace Command Service needs transactional storage and concurrency checks.", "Pending invitation acceptance is deferred."], "status": "PROPOSED", "approver_refs": [] }
+  ],
+  "traceability": {
+    "links": [
+      { "id": "LINK-WORKSPACE-001", "source": { "id": "SPEC-PLATFORM-001", "kind": "SPECIFICATION", "version": "1.0.0" }, "target": { "id": "FREQ-WORKSPACE-002", "kind": "REQUIREMENT" }, "relationship_type": "DERIVED_FROM", "confidence": 1, "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Implements the parent specification's project-scoped authorisation requirement." }, "created_at": "2026-08-24T16:44:57Z", "updated_at": "2026-08-24T16:44:57Z" },
+      { "id": "LINK-WORKSPACE-002", "source": { "id": "FREQ-WORKSPACE-004", "kind": "REQUIREMENT" }, "target": { "id": "AC-WORKSPACE-006", "kind": "REQUIREMENT" }, "relationship_type": "VALIDATES", "confidence": 1, "provenance": { "source_type": "HUMAN", "recorded_at": "2026-08-24T16:44:57Z", "recorded_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "confidence": 1, "rationale": "Acceptance mapping." }, "created_at": "2026-08-24T16:44:57Z", "updated_at": "2026-08-24T16:44:57Z" }
+    ],
+    "coverage_summary": { "method": "Finalised P0 child specification traceability mapping before implementation.", "generated_at": "2026-08-24T16:44:57Z", "requirement_coverage": 1, "test_coverage": 1 }
+  },
+  "evidence": [],
+  "change_history": [
+    { "id": "CHANGE-WORKSPACE-001", "version": "0.1.0", "change_type": "CREATED", "summary": "Initial Project Workspace Boundary draft.", "reason": "P0 child specification required for Workspace Management planning.", "author": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" }, "created_at": "2026-08-24T10:00:00Z" },
+    { "id": "CHANGE-WORKSPACE-002", "version": "1.0.0", "change_type": "UPDATED", "summary": "Finalised workspace role, ownership-transfer, security and verification contract.", "reason": "Resolved the ownership-transfer question and completed the implementation-ready P0 child specification.", "author": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "created_at": "2026-08-24T16:44:57Z", "previous_version": "0.1.0" },
+    { "id": "CHANGE-WORKSPACE-003", "version": "1.0.0", "change_type": "APPROVED", "summary": "Project Workspace Boundary approved.", "reason": "The Project Sponsor approved the finalised P0 workspace role and ownership-transfer contract.", "author": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" }, "created_at": "2026-08-24T16:52:46Z", "approval_ref": "APPROVAL-WORKSPACE-001" }
+  ],
+  "approvals": [
+    {
+      "id": "APPROVAL-WORKSPACE-001",
+      "decision": "APPROVED",
+      "approver": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" },
+      "policy_ref": { "id": "POLICY-SPEC-APPROVAL-001", "kind": "POLICY", "label": "P0 specification approval policy" },
+      "decided_at": "2026-08-24T16:52:46Z",
+      "specification_version": "1.0.0",
+      "reason": "Approved by the Project Sponsor as the implementation contract for the Project Workspace Boundary.",
+      "evidence_refs": []
+    }
+  ],
+  "metadata": {
+    "created_at": "2026-08-24T10:00:00Z",
+    "created_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+    "updated_at": "2026-08-24T16:52:46Z",
+    "updated_by": { "id": "USR-PROJECT-SPONSOR", "display_name": "Project Sponsor", "type": "HUMAN" },
+    "classification": "INTERNAL",
+    "language": "en",
+    "tags": ["p0", "workspace", "authorisation", "project-isolation"]
+  }
+}

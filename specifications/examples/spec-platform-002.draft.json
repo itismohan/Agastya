@@ -1,0 +1,204 @@
+{
+  "$schema": "https://agastya.dev/schemas/canonical-specification/1.0.0/schema.json",
+  "schema_version": "1.0.0",
+  "id": "SPEC-PLATFORM-002",
+  "version": "0.1.0",
+  "status": "DRAFT",
+  "title": "Project Workspace Boundary",
+  "summary": "Define project-scoped workspace membership, role assignment and resource isolation for the P0 Canonical Specification Core.",
+  "project": {
+    "id": "PRJ-AGASTYA-CORE",
+    "name": "AGASTYA Core Platform",
+    "tenant_id": "TENANT-AGASTYA",
+    "environment": "DEVELOPMENT"
+  },
+  "intent": {
+    "id": "INTENT-WORKSPACE-001",
+    "statement": "Ensure that every P0 specification and audit record belongs to one project and is accessible only to an authorised member of that project.",
+    "desired_outcomes": ["Project data is isolated.", "P0 roles are clear and auditable."],
+    "success_measures": [
+      {
+        "name": "Cross-project access denial",
+        "target": "100% denial in automated security tests",
+        "measurement_method": "Run each workspace API operation with a principal who lacks the required project membership."
+      }
+    ],
+    "out_of_scope": ["Organisation-level SSO and SCIM provisioning."],
+    "provenance": {
+      "source_type": "HUMAN",
+      "recorded_at": "2026-08-24T10:00:00Z",
+      "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+      "confidence": 0.9,
+      "rationale": "P0 roadmap child specification."
+    }
+  },
+  "problem": {
+    "statement": "Specifications and audit records cannot be governed safely unless they have a clear project ownership and authorisation boundary.",
+    "current_state": "The initial repository does not yet define a project membership domain model or access-control contract.",
+    "impact": ["Unauthorised disclosure or modification of engineering intent would undermine trust in AGASTYA."],
+    "evidence": []
+  },
+  "business_context": {
+    "domain": "Engineering governance platform",
+    "business_value": "Project isolation is a prerequisite for trusted multi-project use of the Specification Studio.",
+    "priority": "HIGH",
+    "target_users": ["Platform Owner", "Project Editor", "Project Viewer"]
+  },
+  "stakeholders": [
+    {
+      "id": "STAKEHOLDER-WORKSPACE-OWNER",
+      "name": "Project Owner",
+      "role": "Approves membership and specification changes",
+      "interests": ["Access control", "Auditability"],
+      "influence": "HIGH"
+    }
+  ],
+  "actors": [
+    { "id": "ACTOR-WORKSPACE-OWNER", "name": "Project Owner", "type": "HUMAN", "goals": ["Manage project membership and approve specifications."], "permissions": ["project:manage", "specification:approve"] },
+    { "id": "ACTOR-WORKSPACE-EDITOR", "name": "Project Editor", "type": "HUMAN", "goals": ["Draft and validate specifications."], "permissions": ["specification:create", "specification:validate"] },
+    { "id": "ACTOR-WORKSPACE-VIEWER", "name": "Project Viewer", "type": "HUMAN", "goals": ["Inspect authoritative specifications."], "permissions": ["specification:read"] }
+  ],
+  "functional_requirements": [
+    {
+      "id": "FREQ-WORKSPACE-001",
+      "title": "Enforce project-scoped membership",
+      "statement": "The system shall allow a project Owner to grant Owner, Editor or Viewer membership to an identified user and shall evaluate that membership on every project-scoped operation.",
+      "priority": "MUST",
+      "status": "PROPOSED",
+      "acceptance_criteria_refs": ["AC-WORKSPACE-001"],
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 0.9,
+        "rationale": "P0 initial role model."
+      }
+    }
+  ],
+  "non_functional_requirements": [
+    {
+      "id": "NFR-WORKSPACE-001",
+      "category": "SECURITY",
+      "statement": "The authorisation layer shall default-deny an operation when project membership or a required role is absent.",
+      "priority": "MUST",
+      "verification_method": "Automated negative authorisation tests for each role and cross-project request.",
+      "target": "Zero unauthorised successful responses.",
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 1,
+        "rationale": "P0 default-deny security requirement."
+      }
+    }
+  ],
+  "business_rules": [
+    {
+      "id": "RULE-WORKSPACE-001",
+      "statement": "A Viewer may never create, alter, validate, approve or archive a specification revision.",
+      "enforcement": "SYSTEM",
+      "exceptions": [],
+      "provenance": {
+        "source_type": "HUMAN",
+        "recorded_at": "2026-08-24T10:00:00Z",
+        "recorded_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+        "confidence": 1,
+        "rationale": "P0 least-privilege policy."
+      }
+    }
+  ],
+  "constraints": [],
+  "assumptions": [],
+  "dependencies": [],
+  "domain_model": {
+    "bounded_contexts": [
+      { "id": "CONTEXT-WORKSPACE", "name": "Workspace Management", "responsibility": "Own project identity, membership and role grants.", "upstream_context_refs": [], "downstream_context_refs": ["CONTEXT-SPECIFICATION"] }
+    ],
+    "ubiquitous_language": [
+      { "term": "Project", "definition": "The isolation boundary for specifications, audit events and memberships in P0." },
+      { "term": "Membership", "definition": "A role grant that authorises a principal within one project." }
+    ]
+  },
+  "entities": [],
+  "workflows": [],
+  "state_models": [],
+  "api_contracts": [],
+  "event_contracts": [],
+  "data_models": [],
+  "security_requirements": [
+    {
+      "id": "SEC-WORKSPACE-001",
+      "statement": "The service shall record an audit event for each membership change and each denied approval attempt.",
+      "verification_method": "Integration tests assert that the corresponding immutable audit events are emitted.",
+      "priority": "MUST",
+      "control_refs": []
+    }
+  ],
+  "compliance_requirements": [],
+  "performance_requirements": [],
+  "accessibility_requirements": [],
+  "observability_requirements": [],
+  "acceptance_criteria": [
+    {
+      "id": "AC-WORKSPACE-001",
+      "requirement_ref": "FREQ-WORKSPACE-001",
+      "title": "A Viewer is denied write access",
+      "given": "A Viewer belongs to a project with a draft specification.",
+      "when": "The Viewer requests a create, update, validate or approve operation.",
+      "then": "The system returns an authorisation denial, makes no state change and records a security audit event.",
+      "verification_type": "AUTOMATED_TEST",
+      "test_requirement_refs": ["TEST-REQ-WORKSPACE-001"]
+    }
+  ],
+  "test_requirements": [
+    {
+      "id": "TEST-REQ-WORKSPACE-001",
+      "scope": "Role matrix and cross-project authorisation for all P0 specification operations.",
+      "level": "SECURITY",
+      "expected_evidence": "Automated role-matrix test report plus immutable audit events.",
+      "requirement_refs": ["FREQ-WORKSPACE-001"],
+      "acceptance_criteria_refs": ["AC-WORKSPACE-001"]
+    }
+  ],
+  "deployment_requirements": [],
+  "risks": [],
+  "open_questions": [
+    {
+      "id": "QUESTION-WORKSPACE-001",
+      "question": "Should an Owner be able to transfer ownership when they are the only current Owner of a project?",
+      "status": "OPEN",
+      "owner": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+      "impact_if_unresolved": "Membership API semantics and recovery behaviour remain incomplete."
+    }
+  ],
+  "architecture_decisions": [],
+  "traceability": {
+    "links": [],
+    "coverage_summary": {
+      "method": "Draft specification; automated traceability coverage has not been calculated.",
+      "generated_at": "2026-08-24T10:00:00Z"
+    }
+  },
+  "evidence": [],
+  "change_history": [
+    {
+      "id": "CHANGE-WORKSPACE-001",
+      "version": "0.1.0",
+      "change_type": "CREATED",
+      "summary": "Initial project workspace boundary draft.",
+      "reason": "Child specification required for P0 implementation planning.",
+      "author": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+      "created_at": "2026-08-24T10:00:00Z"
+    }
+  ],
+  "approvals": [],
+  "metadata": {
+    "created_at": "2026-08-24T10:00:00Z",
+    "created_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+    "updated_at": "2026-08-24T10:00:00Z",
+    "updated_by": { "id": "USR-PLATFORM-OWNER", "display_name": "Platform Owner", "type": "HUMAN" },
+    "classification": "INTERNAL",
+    "language": "en",
+    "tags": ["p0", "workspace", "draft"]
+  }
+}

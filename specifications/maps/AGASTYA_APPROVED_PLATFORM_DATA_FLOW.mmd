@@ -1,0 +1,62 @@
+flowchart TB
+  classDef actor fill:#F3F4F6,stroke:#4B5563,color:#111827,stroke-width:1.5px
+  classDef core fill:#DBEAFE,stroke:#1D4ED8,color:#111827,stroke-width:1.5px
+  classDef control fill:#FEE2E2,stroke:#B91C1C,color:#111827,stroke-width:1.5px
+  classDef runtime fill:#EDE9FE,stroke:#6D28D9,color:#111827,stroke-width:1.5px
+  classDef evidence fill:#DCFCE7,stroke:#15803D,color:#111827,stroke-width:1.5px
+  classDef ops fill:#FEF3C7,stroke:#B45309,color:#111827,stroke-width:1.5px
+
+  C[Client\nWeb / CLI / SDK]:::actor
+  G[SPEC-007\nAPI Gateway]:::core
+  P[SPEC-009\nPolicy Decision Point]:::control
+  W[SPEC-002\nWorkspace Context]:::core
+  S[SPEC-001\nSpecification Core]:::core
+  O[SPEC-003\nAgent Orchestration]:::runtime
+  X[SPEC-006\nTool Runtime]:::runtime
+  V[SPEC-005\nSecret Vault]:::control
+  L[SPEC-004\nAudit & Evidence Ledger]:::evidence
+  R[SPEC-008\nStreaming Gateway]:::runtime
+  T[SPEC-010\nTelemetry & Tracing]:::ops
+  H[SPEC-011\nHA / DR Control]:::ops
+
+  C -->|authenticated command or query| G
+  P -->|allow / deny / approval gate| G
+  G -->|identity, action and project scope| P
+  G -->|project-scoped command or query| W
+  W -->|workspace membership / project context| S
+  G -->|specification read or change command| S
+  S -->|approved requirements, rules and revision refs| O
+  O -->|policy-scoped tool invocation| X
+  X -->|opaque purpose-bound lease request| V
+
+  subgraph PROOF[Durable proof and client notification]
+    L
+    R
+  end
+
+  G -->|material API command / denial evidence| L
+  S -->|specification / approval evidence| L
+  P -->|policy / role / privileged-access evidence| L
+  O -->|task / operation / approval evidence| L
+  X -->|tool result / containment evidence| L
+  V -->|lease lifecycle evidence| L
+  L -->|safe outbox event and channel cursor| R
+  R -->|authorised project notification| C
+  G -->|authoritative operation resource / resync fallback| C
+
+  subgraph OPS[Operational overlays]
+    T
+    H
+  end
+
+  G -. correlation context .-> T
+  O -. task / retry trace context .-> T
+  X -. runtime telemetry .-> T
+  V -. lease / revocation telemetry .-> T
+  L -. ledger / outbox health .-> T
+  R -. session / replay / backpressure telemetry .-> T
+  T -. safe operational reference only .-> L
+  H -. validate recovery integrity .-> L
+  H -. resume execution safely .-> O
+  H -. resync recovered channels .-> R
+  H -->|recovery exercise evidence| L
