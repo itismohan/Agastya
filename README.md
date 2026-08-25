@@ -77,7 +77,7 @@ AGASTYA must make AI-generated software:
 
 The North Star statement is:
 
-> **Every meaningful software change should be traceable to intent, executable from specification, independently verifiable, governed by policy, and continuously validated against production reality.*[...] 
+> **Every meaningful software change should be traceable to intent, executable from specification, independently verifiable, governed by policy, and continuously validated against production reality.**
 
 AGASTYA must answer five questions for every significant engineering change:
 
@@ -114,7 +114,7 @@ Category:
 
 Core proposition:
 
-> **AGASTYA transforms human intent into executable specifications, coordinates AI engineering agents, verifies software against those specifications, detects engineering drift, and continuously recon[...] 
+> **AGASTYA transforms human intent into executable specifications, coordinates AI engineering agents, verifies software against those specifications, detects engineering drift, and continuously reconciles production evidence with the governing intent.**
 
 Primary tagline:
 
@@ -989,4 +989,147 @@ Affected Documentation
 Affected Production Monitoring
 ```
 
-Calculate... (file truncated for brevity)
+Calculate a **Change Impact Report** that makes both evidence and uncertainty visible.
+
+| Impact dimension | Required output |
+|---|---|
+| **Scope** | The affected requirements, business rules, contracts, services, artefacts, tests, controls and environments. |
+| **Evidence** | The graph paths, source versions, validation outcomes and confidence behind every asserted relationship. |
+| **Risk** | Severity, blast radius, unknown coverage, policy implications and approval requirement. |
+| **Execution plan** | Required verification, rollback reference, permitted automation and human decision points. |
+
+AGASTYA must never present inferred coverage as complete coverage. Unknown or weakly evidenced relationships are first-class impact findings.
+
+---
+
+# 24. AGENT CONTROL PLANE
+
+AGASTYA coordinates AI agents; it does not treat an agent as an authority. Each agent task must be explicit, bounded, policy-evaluated and evidence-producing.
+
+Every task requires:
+
+```text
+Task Objective
+Approved Specification Context
+Permitted Capabilities
+Repository / Environment Scope
+Risk Classification
+Expected Output
+Verification Plan
+Budget / Retry Policy
+Required Approvals
+Evidence Requirements
+```
+
+An agent may propose an implementation, a test, a graph link or a remediation plan. It may not silently redefine governing intent, exceed its granted capability, expose secret material, or mark its own output as verified.
+
+---
+
+# 25. BROWNFIELD INTELLIGENCE
+
+Existing systems are a primary AGASTYA use case. Brownfield discovery should identify services, interfaces, dependencies, entities, tests and potentially undocumented behaviour, then create **proposed** specifications and graph relationships.
+
+> **Inference is not authority.** A discovered behaviour becomes governing intent only when an authorised human reviews, corrects and approves it.
+
+| Brownfield output | Required treatment |
+|---|---|
+| Detected API, service or dependency | Record source, confidence and observed version. |
+| Inferred rule or workflow | Present as a proposal; require human curation before approval. |
+| Missing tests or contracts | Record as an evidence gap, not an assurance claim. |
+| Observed contradiction | Create an explainable drift finding with the relevant evidence. |
+
+---
+
+# 26. RELEASE READINESS
+
+A release is ready only when AGASTYA can show a defensible evidence package. The release decision must consider the approved specification, implementation version, applicable verification, unresolved drift, policy decisions, required approvals and rollback reference.
+
+```text
+APPROVED SPECIFICATION
+        ↓
+IMPLEMENTATION / CHANGE SET
+        ↓
+VERIFICATION EVIDENCE
+        ↓
+DRIFT + POLICY EVALUATION
+        ↓
+RELEASE READINESS DECISION
+```
+
+A release must be blocked when mandatory evidence is absent, a required approval is missing, an applicable policy denies the action, or critical drift remains unresolved.
+
+---
+
+# 27. ENTERPRISE GOVERNANCE
+
+Enterprise capability extends the same control model across tenants, projects, environments, providers and data lifecycles. It does not weaken the core rules for convenience.
+
+| Governance area | AGASTYA control |
+|---|---|
+| **Identity and access** | Tenant/project-scoped roles, contextual policy, separation of duties and auditable privileged actions. |
+| **Secrets and credentials** | Provider-managed encryption boundary, metadata-only audit evidence and short-lived purpose-bound leases. |
+| **Operational evidence** | Correlated, safe telemetry that informs operational health without replacing specification or verification truth. |
+| **Resilience** | Governed backup, restore, reconciliation and recovery exercises that re-establish trust before normal writes resume. |
+| **Data governance** | Classification, residency, transfer, retention, hold and deletion controls activated only through approved specialist policy. |
+
+---
+
+# 28. IMPLEMENTATION ROADMAP
+
+AGASTYA is implemented in dependency order. The product should prove authoritative intent before building advanced automation, and prove verification before granting controlled execution.
+
+| Milestone | Outcome | Primary scope |
+|---|---|---|
+| **M0 — Mobilise** | Release contracts, ADRs, threat model, test specifications and delivery controls are approved. | Implementation readiness |
+| **M1 — Core Control Kernel** | Project-scoped specification authoring, validation, approval, revision, diff and audit work end to end. | `SPEC-PLATFORM-001`, `002` |
+| **M2 — Trust & Access Foundation** | Evidence Ledger, policy enforcement, opaque secret access and contract-first internal API. | `004`, `009`, `005`, `007` |
+| **M3 — Trusted Verification Slice** | Repository traceability, executable contracts, verification evidence and an explainable SRS. | P1 capability set |
+| **M4 — Controlled Change Intelligence** | Impact, drift, brownfield proposals and bounded AI-assisted change workflows. | `003`, `006`, P2 capability set |
+| **M5 — Governed Runtime Operations** | Authorised streaming, safe telemetry and evidence-backed recovery. | `008`, `010`, `011` |
+| **M6 — Enterprise Data Governance** | Residency and lifecycle governance after specialist approval. | `012` |
+
+The detailed roadmap, milestone dependencies and current delivery gates are maintained in [`specifications/roadmaps/AGASTYA_IMPLEMENTATION_ROADMAP.md`](specifications/roadmaps/AGASTYA_IMPLEMENTATION_ROADMAP.md).
+
+---
+
+# 29. CURRENT SPECIFICATION SUITE
+
+The current platform specification suite defines the product architecture and its governed implementation boundaries.
+
+| Specification group | Status |
+|---|---|
+| **001–011** | Approved for their stated detailed-design boundaries. |
+| **012 — Enterprise Compliance & Data Residency** | Draft; requires qualified specialist approval before implementation commitments or production policy activation. |
+
+The complete release summary is available in [`specifications/releases/AGASTYA_SPEC_PLATFORM_001_012_RELEASE_NOTES.md`](specifications/releases/AGASTYA_SPEC_PLATFORM_001_012_RELEASE_NOTES.md). The approved architecture dependency and data-flow maps are available in [`specifications/maps/`](specifications/maps/).
+
+---
+
+# 30. NON-NEGOTIABLE ENGINEERING RULES
+
+1. **No feature begins without an approved governing specification or an explicitly recorded exception.**
+2. **No agent, tool, API action or stream subscription bypasses policy evaluation.**
+3. **No secret value enters agent context, ordinary logs, Ledger payloads or client responses.**
+4. **No material action is considered complete without traceable verification evidence.**
+5. **No inferred behaviour becomes authoritative intent without authorised human curation.**
+6. **No runtime signal silently rewrites a specification; it produces evidence and a governed curation recommendation.**
+7. **No production recovery path bypasses integrity, authorisation or evidence requirements.**
+
+---
+
+# 31. STARTING POINT
+
+The first implementation objective is deliberately narrow:
+
+```text
+Create a project
+  → author a draft specification
+  → validate it
+  → approve it
+  → create a later revision
+  → compare the diff
+  → retrieve the governing version through UI, API and CLI
+  → inspect immutable audit evidence
+```
+
+This thin vertical slice proves the central AGASTYA promise: **software engineering can be governed from intent to verified evidence.**

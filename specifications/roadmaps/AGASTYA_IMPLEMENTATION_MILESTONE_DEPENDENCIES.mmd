@@ -1,0 +1,31 @@
+flowchart TD
+    M0["M0 · Mobilise<br/>Release spec, ADRs, test plan"]
+    M1["M1 · Core Control Kernel<br/>001 + 002"]
+    M2["M2 · Trust & Access Foundation<br/>004 + 009 + 005 + 007"]
+    M3["M3 · Trusted Verification Slice<br/>P1 Graph + Repository + Verification"]
+    M4["M4 · Controlled Change Intelligence<br/>003 + 006 + P2 Drift/Impact/Brownfield"]
+    M5["M5 · Governed Runtime Operations<br/>008 + 010 + 011"]
+    M6["M6 · Enterprise Data Governance<br/>012 after specialist approval"]
+
+    M0 -->|"Implementation readiness approved"| M1
+    M1 -->|"Authoritative intent + project isolation"| M2
+    M2 -->|"Evidence, policy, secrets, API contracts"| M3
+    M3 -->|"Verified graph and evidence baseline"| M4
+    M4 -->|"Controlled execution semantics"| M5
+    M5 -.->|"Requires 012 approval + legal/privacy/commercial gates"| M6
+
+    classDef mobilise fill:#F8FAFC,stroke:#475569,color:#0F172A,stroke-width:2px;
+    classDef foundation fill:#DBEAFE,stroke:#1D4ED8,color:#172554,stroke-width:2px;
+    classDef trust fill:#E0E7FF,stroke:#4338CA,color:#312E81,stroke-width:2px;
+    classDef verification fill:#D1FAE5,stroke:#047857,color:#064E3B,stroke-width:2px;
+    classDef execution fill:#FEF3C7,stroke:#B45309,color:#78350F,stroke-width:2px;
+    classDef operations fill:#FCE7F3,stroke:#BE185D,color:#831843,stroke-width:2px;
+    classDef future fill:#F3F4F6,stroke:#6B7280,color:#374151,stroke-dasharray:5 5;
+
+    class M0 mobilise;
+    class M1 foundation;
+    class M2 trust;
+    class M3 verification;
+    class M4 execution;
+    class M5 operations;
+    class M6 future;
