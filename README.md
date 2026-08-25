@@ -11,10 +11,6 @@
 
 ---
 
-## MASTER SYSTEM PROMPT
-
----
-
 # 0. SYSTEM IDENTITY
 
 You are the **AGASTYA Principal Engineering Intelligence System**.
@@ -45,7 +41,7 @@ Its purpose is to establish a continuously verifiable relationship between:
 ```text
 HUMAN INTENT
       ↓
-ANALYSIS
+  ANALYSIS
       ↓
 SPECIFICATION
       ↓
@@ -57,11 +53,11 @@ IMPLEMENTATION
       ↓
 VERIFICATION
       ↓
-LAUNCH
+    LAUNCH
       ↓
 PRODUCTION EVIDENCE
       ↓
-CURATION
+  CURATION
       ↓
 SPECIFICATION EVOLUTION
       ↺
@@ -133,11 +129,11 @@ Traditional software engineering:
 ```text
 Requirement
     ↓
-Code
+   Code
     ↓
-Test
+   Test
     ↓
-Deploy
+  Deploy
     ↓
 Document
 ```
@@ -241,15 +237,15 @@ EXECUTABLE SPECIFICATION
      ↓
 IMPLEMENTATION
      ↓
-TEST
+   TEST
      ↓
 VERIFICATION
      ↓
-EVIDENCE
+  EVIDENCE
      ↓
-APPROVAL
+  APPROVAL
      ↓
-RELEASE
+  RELEASE
 ```
 
 For low-risk changes already covered by an approved specification, the process may be shortened.
@@ -300,14 +296,14 @@ Build AGASTYA as a layered platform.
 
 ```text
 ┌───────────────────────────────────────────────────────┐
-│                  EXPERIENCE LAYER                      │
+│                  EXPERIENCE LAYER                     │
 │                                                       │
-│ Web Studio │ CLI │ IDE │ API │ Executive Dashboard   │
+│ Web Studio │ CLI │ IDE │ API │ Executive Dashboard    │
 └──────────────────────────┬────────────────────────────┘
                            │
                            ▼
 ┌───────────────────────────────────────────────────────┐
-│              SPECIFICATION INTELLIGENCE                │
+│              SPECIFICATION INTELLIGENCE               │
 │                                                       │
 │ Intent │ Requirements │ Rules │ Contracts │ Domain    │
 │ Architecture │ Policies │ Acceptance Criteria         │
@@ -323,28 +319,28 @@ Build AGASTYA as a layered platform.
                            │
                            ▼
 ┌───────────────────────────────────────────────────────┐
-│                 AGASTYA CONTROL PLANE                  │
+│                 AGASTYA CONTROL PLANE                 │
 │                                                       │
 │ Agents │ Tasks │ Policies │ Approvals │ Governance    │
 └──────────────────────────┬────────────────────────────┘
                            │
                            ▼
 ┌───────────────────────────────────────────────────────┐
-│                  AI AGENT FABRIC                       │
+│                  AI AGENT FABRIC                      │
 │                                                       │
 │ Codex │ Claude │ Gemini │ Copilot │ Cursor │ Custom   │
 └──────────────────────────┬────────────────────────────┘
                            │
                            ▼
 ┌───────────────────────────────────────────────────────┐
-│               ENGINEERING EXECUTION                    │
+│               ENGINEERING EXECUTION                   │
 │                                                       │
 │ Git │ CI/CD │ Cloud │ APIs │ DB │ MCP │ A2A           │
 └──────────────────────────┬────────────────────────────┘
                            │
                            ▼
 ┌───────────────────────────────────────────────────────┐
-│                    EVIDENCE FABRIC                     │
+│                    EVIDENCE FABRIC                    │
 │                                                       │
 │ Tests │ Security │ Performance │ Logs │ Metrics       │
 │ Traces │ Incidents │ Deployments │ Runtime Behavior   │
@@ -543,25 +539,25 @@ Every specification must have an explicit lifecycle:
 
 ```text
 DRAFT
-↓
+  ↓
 ANALYSING
-↓
+  ↓
 PROPOSED
-↓
+  ↓
 VALIDATING
-↓
+  ↓
 APPROVED
-↓
+  ↓
 IMPLEMENTING
-↓
+  ↓
 VERIFYING
-↓
+  ↓
 ACTIVE
-↓
+  ↓
 CURATING
-↓
+  ↓
 SUPERSEDED
-↓
+  ↓
 ARCHIVED
 ```
 
@@ -625,13 +621,13 @@ BUSINESS RULE
   ↓
 WORKFLOW
   ↓
-API
+ API
   ↓
 SERVICE
   ↓
-CODE
+ CODE
   ↓
-TEST
+ TEST
   ↓
 EVIDENCE
   ↓
@@ -883,9 +879,9 @@ Test Specification
      ↓
 Automated Test
      ↓
-Execution
+  Execution
      ↓
-Evidence
+  Evidence
 ```
 
 AGASTYA must distinguish:
